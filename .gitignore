@@ -1,0 +1,63 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore user-specific files
+/.idea
+/.vscode
+/.vs
+/.sass-cache
+*.log
+
+# Ignore compiled code
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.gz
+
+# Ignore database files
+*.bak
+*.mdf
+*.ldf
+
+# Ignore configuration files
+config.php
+config.ini
+database.ini
+.env
+
+# Ignore cache files
+cache/
+tmp/
+log/
+web/assets/*
+
+# Ignore dependencies
+/vendor/
+/node_modules/
+*.lock
+composer.lock
+
+# Ignore build files
+/build/
+/bin/
+/dist/
+
+# Ignore generated files
+gen/
+generated/
+.idea_modules/
+out/
+target/
+nbproject/
+.classpath
+.project
+*.iml
+
+# Ignore logs
+logs/
+*.log.*
