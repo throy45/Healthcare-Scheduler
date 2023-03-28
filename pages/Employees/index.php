@@ -14,6 +14,7 @@
 </head>
 <body>
     <h1>List of Employees</h1>
+    <a href="./create.php">Add a new Employee</a>
     <table>
         <tr>
             <th>Employee ID</th>
@@ -45,6 +46,6 @@
             </tr>
         <?php }; ?>
     </tbody>
-    <a href="../index.php">Back to main page</a>
+    <a href="../../index.php">Back to main page</a>
 </body>
 </html>

@@ -1,0 +1,74 @@
+<?php require_once '../../database.php'; 
+if (
+    isset($_POST["EmployeeID"]) && 
+    isset($_POST["FirstName"]) && 
+    isset($_POST["LastName"]) && 
+    isset($_POST["Role"]) && 
+    isset($_POST["DateOfBirth"]) && 
+    isset($_POST["MedicareNumber"]) && 
+    isset($_POST["Email"]) && 
+    isset($_POST["Citizenship"]) && 
+    isset($_POST["PhoneNumber"]) && 
+    isset($_POST["Address"])
+    ) {
+    //$employees = $conn->prepare("INSERT INTO employees VALUES (:EmployeeID, :FirstName, :LastName, :Role, :DateOfBirth, :MedicareNumber, :Email, :Citizenship, :PhoneNumber, :Address)");
+    $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssssssss", $EmployeeID, $FirstName, $LastName, $Role, $date_of_birth, $medicare_number, $email, $citizenship, $phone_number, $address);
+    
+
+    /*
+    $employees->bindParam(':EmployeeID', $_POST["EmployeeID"]);
+    $employees->bindParam(':FirstName', $_POST["FirstName"]);
+    $employees->bindParam(':LastName', $_POST["LastName"]);
+    $employees->bindParam(':Role', $_POST["Role"]);
+    $employees->bindParam(':DateOfBirth', $_POST["DateOfBirth"]);
+    $employees->bindParam(':MedicareNumber', $_POST["MedicareNumber"]);
+    $employees->bindParam(':Email', $_POST["Email"]);
+    $employees->bindParam(':Citizenship', $_POST["Citizenship"]);
+    $employees->bindParam(':PhoneNumber', $_POST["PhoneNumber"]);
+    $employees->bindParam(':Address', $_POST["Address"]);
+    */
+
+    if ($stmt->execute()){//$employees->execute()) {
+        header("Location: ./index.php");
+    } else {
+        echo "Something went wrong. Please try again later.";
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Add Employee</h1>
+    <form action="./create.php" method="post">
+        <label for="EmployeeID">Employee ID</label><br>
+        <input type="number" name="EmployeeID" id="EmployeeID" require><br>
+        <label for="FirstName">First Name</label><br>
+        <input type="text" name="FirstName" id="FirstName"><br>
+        <label for="LastName">Last Name</label><br>
+        <input type="text" name="LastName" id="LastName"><br>
+        <label for="Role">Role</label><br>
+        <input type="text" name="Role" id="Role"><br>
+        <label for="DateOfBirth">Date of Birth</label><br>
+        <input type="date" name="DateOfBirth" id="DateOfBirth"><br>
+        <label for="MedicareNumber">Medicare Number</label><br>
+        <input type="text" name="MedicareNumber" id="MedicareNumber"><br>
+        <label for="Email">Email</label><br>
+        <input type="text" name="Email" id="Email"><br>
+        <label for="Citizenship">Citizenship</label><br>
+        <input type="text" name="Citizenship" id="Citizenship"><br>
+        <label for="PhoneNumber">Phone Number</label><br>
+        <input type="text" name="PhoneNumber" id="PhoneNumber"><br>
+        <label for="Address">Address</label><br>
+        <input type="text" name="Address" id="Address"><br><br>
+        <button type="submit">Add</button><br><br>
+    </form>
+    <a href="./">Back to Employee list</a>
+</body>
+</html>

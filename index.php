@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>Welcome to HFESTS web app</h1>
+    <a href="./pages/Facilities/index.php">Facilities</a>
     <a href="./pages/Employees/index.php">Employees</a>
     <br>
     <?php echo "Hello World"; ?>
