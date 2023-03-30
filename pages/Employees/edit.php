@@ -1,0 +1,77 @@
+<?php require_once '../../database.php'; 
+
+if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
+    $EmployeeID = $_GET['EmployeeID'];
+    $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
+    $row = $result->fetch_assoc();
+}
+if (
+    isset($_POST["EmployeeID"]) && 
+    isset($_POST["FirstName"]) && 
+    isset($_POST["LastName"]) && 
+    isset($_POST["Role"]) && 
+    isset($_POST["DateOfBirth"]) && 
+    isset($_POST["MedicareNumber"]) && 
+    isset($_POST["Email"]) && 
+    isset($_POST["Citizenship"]) && 
+    isset($_POST["PhoneNumber"]) && 
+    isset($_POST["Address"])
+    ) {
+    $EmployeeID = $_POST["EmployeeID"];
+    $FirstName = $_POST["FirstName"];
+    $LastName = $_POST["LastName"];
+    $Role = $_POST["Role"];
+    $date_of_birth = $_POST["DateOfBirth"];
+    $medicare_number = $_POST["MedicareNumber"];
+    $email = $_POST["Email"];
+    $citizenship = $_POST["Citizenship"];
+    $phone_number = $_POST["PhoneNumber"];
+    $address = $_POST["Address"];
+
+    $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address' WHERE EmployeeID=$EmployeeID");
+
+    
+    if ($stmt->execute()){
+        header("Location: ./index.php");
+    } else {
+        echo "Something went wrong. Please try again later.";
+        header("Location: ./edit.php?EmployeeID=".$EmployeeID);
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit an Employee</title>
+</head>
+<body>
+    <h1>Edit Employee</h1>
+    <form action="./edit.php" method="post">
+        <label for="EmployeeID">Employee ID</label><br>
+        <input type="number" name="EmployeeID" id="EmployeeID" readonly="readonly"  value=<?php echo $row["EmployeeID"]  ?> require><br>
+        <label for="FirstName">First Name</label><br>
+        <input type="text" name="FirstName" id="FirstName" value=<?php echo $row["FName"] ?>><br>
+        <label for="LastName">Last Name</label><br>
+        <input type="text" name="LastName" id="LastName" value=<?php echo $row["LName"] ?>><br>
+        <label for="Role">Role</label><br>
+        <input type="text" name="Role" id="Role" value=<?php echo $row["Role"] ?>><br>
+        <label for="DateOfBirth">Date of Birth</label><br>
+        <input type="date" name="DateOfBirth" id="DateOfBirth" value=<?php echo $row["DoBirth"] ?>><br>
+        <label for="MedicareNumber">Medicare Number</label><br>
+        <input type="text" name="MedicareNumber" id="MedicareNumber" value=<?php echo $row["MedicareNumber"] ?>><br>
+        <label for="Email">Email</label><br>
+        <input type="text" name="Email" id="Email" value=<?php echo $row["Email"] ?>><br>
+        <label for="Citizenship">Citizenship</label><br>
+        <input type="text" name="Citizenship" id="Citizenship" value=<?php echo $row["Citizenship"] ?>><br>
+        <label for="PhoneNumber">Phone Number</label><br>
+        <input type="text" name="PhoneNumber" id="PhoneNumber" value=<?php echo $row["PhoneNumber"] ?>><br>
+        <label for="Address">Address</label><br>
+        <input type="text" name="Address" id="Address" value=<?php echo $row["Address"] ?>><br><br>
+        <button type="submit">Update</button><br><br>
+    </form>
+    <a href="./">Back to Employee list</a>
+</body>
+</html>

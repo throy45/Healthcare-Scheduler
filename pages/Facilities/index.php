@@ -25,6 +25,7 @@
                 <th>WebAddress</th>
                 <th>Phone Number</th>
                 <th>Address</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,10 @@
                     <td><?php echo $row['WebAddress'] ?></td>
                     <td><?php echo $row['PhoneNumber'] ?></td>
                     <td><?php echo $row['Address'] ?></td>
+                    <td>
+                        <a href="./edit.php?FacilityID=<?php echo $row["FacilityID"] ?>">Edit</a>
+                        <a href="./edit.php?FacilityID=<?php echo $row["FacilityID"] ?>">Delete</a>
+                    </td>
                 </tr>
             <?php }; ?>
         </tbody>

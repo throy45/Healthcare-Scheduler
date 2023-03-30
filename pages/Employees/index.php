@@ -29,6 +29,7 @@
                 <th>Citizenship</th>
                 <th>Phone Number</th>
                 <th>Address</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -44,6 +45,10 @@
                     <td><?php echo $row['Citizenship'] ?></td>
                     <td><?php echo $row['PhoneNumber'] ?></td>
                     <td><?php echo $row['Address'] ?></td>
+                    <td>
+                        <a href="./edit.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Edit</a>
+                        <a href="./delete.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Delete</a>
+                    </td>
                 </tr>
             <?php }; ?>
         </tbody>

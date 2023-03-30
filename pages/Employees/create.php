@@ -11,7 +11,7 @@ if (
     isset($_POST["PhoneNumber"]) && 
     isset($_POST["Address"])
     ) {
-    //$employees = $conn->prepare("INSERT INTO employees VALUES (:EmployeeID, :FirstName, :LastName, :Role, :DateOfBirth, :MedicareNumber, :Email, :Citizenship, :PhoneNumber, :Address)");
+        
     $EmployeeID = $_POST["EmployeeID"];
     $FirstName = $_POST["FirstName"];
     $LastName = $_POST["LastName"];
@@ -22,24 +22,11 @@ if (
     $citizenship = $_POST["Citizenship"];
     $phone_number = $_POST["PhoneNumber"];
     $address = $_POST["Address"];
-    $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssss", $EmployeeID, $FirstName, $LastName, $Role, $date_of_birth, $medicare_number, $email, $citizenship, $phone_number, $address);
-    
 
-    /*
-    $employees->bindParam(':EmployeeID', $_POST["EmployeeID"]);
-    $employees->bindParam(':FirstName', $_POST["FirstName"]);
-    $employees->bindParam(':LastName', $_POST["LastName"]);
-    $employees->bindParam(':Role', $_POST["Role"]);
-    $employees->bindParam(':DateOfBirth', $_POST["DateOfBirth"]);
-    $employees->bindParam(':MedicareNumber', $_POST["MedicareNumber"]);
-    $employees->bindParam(':Email', $_POST["Email"]);
-    $employees->bindParam(':Citizenship', $_POST["Citizenship"]);
-    $employees->bindParam(':PhoneNumber', $_POST["PhoneNumber"]);
-    $employees->bindParam(':Address', $_POST["Address"]);
-    */
+    $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address')");
 
-    if ($stmt->execute()){//$employees->execute()) {
+
+    if ($stmt->execute()){
         header("Location: ./index.php");
     } else {
         echo "Something went wrong. Please try again later.";
@@ -52,7 +39,7 @@ if (
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create an Employee</title>
 </head>
 <body>
     <h1>Add Employee</h1>
