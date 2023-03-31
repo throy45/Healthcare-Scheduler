@@ -86,7 +86,7 @@ INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date)
 
 INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (1, 1, 'COVID-19', '2022-12-01'),
-(2, 2, 'COVID-19', '2023-01-01'),
+(2, 2, 'COVID-19', '2023-03-31'),
 (3, 3, 'COVID-19', '2023-01-05'),
 (4, 4, 'COVID-19', '2023-01-10'),
 (5, 5, 'COVID-19', '2023-01-15'),
@@ -94,7 +94,7 @@ INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (7, 7, 'COVID-19', '2022-12-25'),
 (8, 8, 'COVID-19', '2023-01-01'),
 (9, 9, 'COVID-19', '2023-01-05'),
-(10, 10, 'COVID-19', '2023-01-10'),
+(10, 10, 'COVID-19', '2023-03-31'),
 (11, 11, 'SARS-Cov-2 Variant', '2023-01-15'),
 (12, 12, 'SARS-Cov-2 Variant', '2022-12-20'),
 (13, 13, 'SARS-Cov-2 Variant', '2022-12-25'),
@@ -105,12 +105,13 @@ INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (18, 3, 'Flu', '2022-12-20'),
 (19, 4, 'Flu', '2022-12-25'),
 (20, 5, 'Flu', '2023-01-01'),
-(21, 21, 'COVID-19', '2023-01-02'),
+(21, 21, 'COVID-19', '2023-03-31'),
 (22, 6, "COVID-19", "2022-09-05"),
-(23, 6, "COVID-19", "2022-06-05"),
+(23, 6, "COVID-19", "2023-03-31"),
 (24, 2, "Flu", "2022-08-05"),
 (25, 2, "SARS-Cov-2 Variant", "2022-08-05"),
-(26, 23, "COVID-19", "2022-12-01");
+(26, 23, "COVID-19", "2022-12-01"),
+(27, 19, "COVID-19", "2023-03-31");
 
 INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES
 (1, 1, 1, '2022-12-01', NULL),
