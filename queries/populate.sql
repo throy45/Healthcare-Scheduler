@@ -1,5 +1,4 @@
-INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address)
-VALUES
+INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address, PostalCode) VALUES
 (1, 'Hospital Maisonneuve Rosemont', 'Hospital', 500, 'www.centralhospital.com', '514-555-1234', '123 Main Street', 'H3G 1B3'),
 (2, 'North CLSC', 'CLSC', 200, 'www.northCLSC.com', '514-555-2345', '456 Queen Street', 'H3G 1Z7'),
 (3, 'West Pharmacy', 'Pharmacy', 300, 'www.westpharmacy.com', '514-555-3456', '789 King Street', 'H3G 1A1'),
@@ -13,8 +12,7 @@ VALUES
 (11, 'General Hospital', 'Hospital', 200, 'www.generalhospital.com', '520-333-1333', '203 Saint-Peter Street', 'X3Y 6S8'),
 (12, 'Queen West CLSC', 'CLSC', 100, 'www.queenwestclsc.com', '520-333-9897', '1000 Saint-Louis Street', 'L2C 4T9');
 
-INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address)
-VALUES
+INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES
 (1, 'John', 'Doe', 'Nurse', '1980-01-01', '123-456-789', 'johndoe@email.com', 'Canadian', '514-555-1234', '123 Main Street', 'H3G 1A7'),
 (2, 'Jane', 'Smith', 'Doctor', '1982-02-15', '234-567-890', 'janesmith@email.com', 'Canadian', '514-555-2345', '456 Queen Street', 'H3G 1A7'),
 (3, 'Bob', 'Johnson', 'Cashier', '1985-03-25', '345-678-901', 'bobjohnson@email.com', 'Canadian', '514-555-3456', '789 King Street', 'H3G 1A7'),
@@ -38,7 +36,17 @@ VALUES
 (21, 'John', 'Nguyen', 'Doctor', '1990-01-01', '001-786-278', 'johnnguyen@email.com', 'French', '514-555-2672', '78 Saint-Mary Street', 'J4X 9T2'),
 (22, 'Mary', 'Tran', 'Receptionist', '1980-09-01', '189-298-872', 'marytran@email.com', 'Canadian', '514-555-2872', '728 Saint-Louis Street', 'J5X 4T6'),
 (23, 'Eddy', 'Wang', 'Doctor', '1987-08-10', '020-871-188', 'eddywang@email.com', 'Canadian', '762-265-2982', '22 Saint-Louis Street', 'N5T 2IE'),
-(24, 'Jenny', 'Wang', 'Nurse', '1992-07-11', '782-892-287', 'jennywang@email.com', 'Canadian', '728-892-6721', '192 Saint-Justin Street', 'J5T 8G4');
+(24, 'Jenny', 'Wang', 'Nurse', '1992-07-11', '782-892-287', 'jennywang@email.com', 'Canadian', '728-892-6721', '192 Saint-Justin Street', 'J5T 8G4'),
+(25, 'Henry', 'Aspen', 'Administrative personnel', '1965-01-01', '128-476-709', 'henryaspen@email.com', 'Canadian', '514-344-1234', '143 Good Street', 'H3S 1W8'),
+(26, 'Judy', 'Chicago', 'Administrative personnel', '1952-02-10', '284-567-830', 'judychicago@email.com', 'Canadian', '514-756-2315', '46 Prince Street', 'H4V 1B8'),
+(27, 'Bob', 'Dylan', 'Administrative personnel', '1978-08-25', '365-658-991', 'bobdylan@email.com', 'Canadian', '514-255-7456', '9 Best Street', 'H3J 1C7'),
+(28, 'David', 'Kwan', 'Administrative personnel', '1964-04-15', '582-779-012', 'davidkwan@email.com', 'Canadian', '514-244-4577', '24 Worst Street', 'H6A 1B4'),
+(29, 'Benjamin', 'Booth', 'Administrative personnel', '1980-05-24', '517-830-133', 'benjaminbooth@email.com', 'Canadian', '514-265-5238', '9 Kent Street', 'H8D 1F3'),
+(30, 'Morgane', 'Dion', 'Administrative personnel', '1982-06-15', '558-911-234', 'morganedion@email.com', 'Canadian', '514-285-5709', '15 Ellendale Avenue', 'H3S 1W7'),
+(31, 'Noemie', 'Duke', 'Administrative personnel', '1975-05-24', '709-002-045', 'noemieduke@email.com', 'Canadian', '514-736-2849', '45 Blood Street', 'H4T 1C3'),
+(32, 'Sarah', 'Lance', 'Administrative personnel', '1976-09-19', '892-173-466', 'sarahlance@email.com', 'Canadian', '514-589-6435', '52 Lake Avenue', 'H6J 8P5'),
+(33, 'Celia', 'Kremer', 'Administrative personnel', '1977-08-24', '911-244-577', 'celiakremer@email.com', 'Canadian', '514-887-625', '25 Bloom Avenue', 'H5G 3S5'),
+(34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5');
 
 INSERT INTO Manager (EmployeeID) VALUES
 (1),
@@ -52,8 +60,7 @@ INSERT INTO Manager (EmployeeID) VALUES
 (9),
 (10);
 
-INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date)
-VALUES
+INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date) VALUES
 (1, 1, 1, 'Pfizer', 1, '2022-12-01'),
 (2, 1, 1, 'Pfizer', 2, '2023-01-15'),
 (3, 2, 2, 'Moderna', 1, '2022-11-01'),
@@ -75,8 +82,7 @@ VALUES
 (19, 10, 10, 'Moderna', 1, '2022-03-01'),
 (20, 10, 10, 'Moderna', 2, '2023-01-30');
 
-INSERT INTO Infections(InfectionID, EmployeeID, Type, Date)
-VALUES
+INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (1, 1, 'COVID-19', '2022-12-01'),
 (2, 2, 'COVID-19', '2023-01-01'),
 (3, 3, 'COVID-19', '2023-01-05'),
@@ -161,4 +167,14 @@ INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('J4X 9T2', 'Brossard', 'Quebec'),
 ('J5X 4T6', 'Brossard', 'Quebec'),
 ('N5T 2IE', 'Toronto', 'Ontario'),
-('J5T 8G4', 'Toronto', 'Ontario');
+('J5T 8G4', 'Toronto', 'Ontario'),
+('H3S 1W8', 'Montreal', 'Quebec'),
+('H4V 1B8', 'Montreal', 'Quebec'),
+('H3J 1C7', 'Montreal', 'Quebec'),
+('H6A 1B4', 'Montreal', 'Quebec'),
+('H8D 1F3', 'Montreal', 'Quebec'),
+('H3S 1W7', 'Montreal', 'Quebec'),
+('H4T 1C3', 'Montreal', 'Quebec'),
+('H6J 8P5', 'Montreal', 'Quebec'),
+('H5G 3S5', 'Montreal', 'Quebec'),
+('H9D 5B5', 'Montreal', 'Quebec');
