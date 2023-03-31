@@ -5,7 +5,9 @@ CREATE TABLE Facilities (
   Capacity INT,
   WebAddress VARCHAR(255),
   PhoneNumber VARCHAR(255),
-  Address VARCHAR(255)
+  Address VARCHAR(255),
+  PostalCode VARCHAR(255),
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
 );
 
 CREATE TABLE Employees (
@@ -18,7 +20,9 @@ CREATE TABLE Employees (
   Email VARCHAR(255),
   Citizenship VARCHAR(255),
   PhoneNumber VARCHAR(255),
-  Address VARCHAR(255)
+  Address VARCHAR(255),
+  PostalCode VARCHAR(255),
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
 );
 
 CREATE TABLE Manager (
@@ -94,21 +98,4 @@ CREATE TABLE PostalCodes (
   PostalCode CHAR(7) PRIMARY KEY,
   City VARCHAR(255),
   Province VARCHAR(255)
-);
-
-CREATE TABLE FacilityPC (
-  FacilityID INT,
-  PostalCode CHAR(7),
-  PRIMARY KEY (FacilityID),
-  FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
-);
-
-
-CREATE TABLE EmployeePC (
-  EmployeeID INT,
-  PostalCode CHAR(7),
-  PRIMARY KEY (EmployeeID),
-  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
 );
