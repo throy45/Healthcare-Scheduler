@@ -49,16 +49,18 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5');
 
 INSERT INTO Manager (EmployeeID) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
 (6),
-(7),
-(8),
-(9),
-(10);
+(14),
+(25),
+(26),
+(27),
+(28),
+(29),
+(30),
+(31),
+(32),
+(33),
+(34);
 
 INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date) VALUES
 (1, 1, 1, 'Pfizer', 1, '2022-12-01'),
@@ -139,16 +141,18 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (12, 24, 26, "2022-01-02", null);
 
 INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES
-(1, 1, '2022-12-01', NULL),
-(2, 2, '2022-12-02', NULL),
-(3, 3, '2022-12-03', NULL),
-(4, 4, '2022-12-04', NULL),
-(5, 5, '2022-12-05', NULL),
+(1, 14, '2022-12-01', NULL),
+(2, 25, '2022-12-02', NULL),
+(3, 26, '2022-12-03', NULL),
+(4, 27, '2022-12-04', NULL),
+(5, 28, '2022-12-05', NULL),
 (6, 6, '2022-12-06', NULL),
-(7, 7, '2022-12-07', NULL),
-(8, 8, '2022-12-08', NULL),
-(9, 9, '2022-12-09', NULL),
-(10, 10, '2022-12-10', NULL);
+(7, 29, '2022-12-07', NULL),
+(8, 30, '2022-12-08', NULL),
+(9, 31, '2022-12-09', NULL),
+(10, 32, '2022-12-10', NULL);
+(11, 33, '2022-12-11', NULL),
+(12, 34, '2022-12-12', NULL);
 
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
