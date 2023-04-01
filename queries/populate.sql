@@ -47,6 +47,7 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (32, 'Sarah', 'Lance', 'Administrative personnel', '1976-09-19', '892-173-466', 'sarahlance@email.com', 'Canadian', '514-589-6435', '52 Lake Avenue', 'H6J 8P5'),
 (33, 'Celia', 'Kremer', 'Administrative personnel', '1977-08-24', '911-244-577', 'celiakremer@email.com', 'Canadian', '514-887-625', '25 Bloom Avenue', 'H5G 3S5'),
 (34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5');
+(35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9');
 
 INSERT INTO Manager (EmployeeID) VALUES
 (6),
@@ -111,7 +112,17 @@ INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (24, 2, "Flu", "2022-08-05"),
 (25, 2, "SARS-Cov-2 Variant", "2022-08-05"),
 (26, 23, "COVID-19", "2022-12-01"),
-(27, 19, "COVID-19", "2023-03-31");
+(27, 19, "COVID-19", "2023-03-31"),
+(28, 1, 'COVID-19', '2022-12-20'),
+(29, 1, 'COVID-19', '2023-02-01'),
+(30, 9, 'COVID-19', '2023-01-25'),
+(31, 9, 'COVID-19', '2023-02-15'),
+(32, 2, 'COVID-19', '2022-10-20'),
+(33, 2, 'COVID-19', '2022-11-20'),
+(34, 23, "COVID-19", "2023-01-03"),
+(35, 23, "COVID-19", "2023-02-06"),
+(36, 10, 'COVID-19', '2022-12-28'),
+(37, 10, 'COVID-19', '2023-02-01');
 
 INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES
 (1, 1, 1, '2022-12-01', NULL),
@@ -178,7 +189,8 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (12, 9, 62, '2023-02-05', NULL),
 (12, 10, 63, '2023-02-06', NULL),
 (12, 11, 64, '2023-02-07', NULL),
-(10, 19, 65, '2023-02-12', NULL);
+(10, 19, 65, '2023-02-12', NULL),
+(6, 35, 66, '2022-12-01', NULL);
 
 INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
@@ -221,7 +233,8 @@ INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H4T 1C3', 'Montreal', 'Quebec'),
 ('H6J 8P5', 'Montreal', 'Quebec'),
 ('H5G 3S5', 'Montreal', 'Quebec'),
-('H9D 5B5', 'Montreal', 'Quebec');
+('H9D 5B5', 'Montreal', 'Quebec'),
+('G1B 0A9', 'Quebec', 'Quebec');
 
 INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (1, 1, '2023-03-06', '08:00', '12:00'),
@@ -436,7 +449,11 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (12, 34, '2023-03-08', '16:00', '18:00'),
 (12, 34, '2023-03-15', '16:00', '18:00'),
 (12, 34, '2023-03-22', '16:00', '18:00'),
-(12, 34, '2023-03-29', '16:00', '18:00');
+(12, 34, '2023-03-29', '16:00', '18:00'),
+(6, 35, '2023-03-06', '00:00', '8:00'),
+(6, 35, '2023-03-13', '00:00', '8:00'),
+(6, 35, '2023-03-20', '00:00', '8:00'),
+(6, 35, '2023-03-27', '00:00', '8:00');
 
 INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES
 (2, 12, '2023-03-31', 'Warning', 'One of your colleagues
