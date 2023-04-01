@@ -438,3 +438,21 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (12, 34, '2023-03-22', '16:00', '18:00'),
 (12, 34, '2023-03-29', '16:00', '18:00');
 
+INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES
+(2, 12, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(3, 13, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(4, 14, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(5, 15, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(10, 19, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(12, 9, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(12, 34, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(10, 10, '2023-03-31', 'Warning', 'One of your colleagues
+that you have worked with in the past two weeks have been infected with COVID-19');
+
