@@ -41,7 +41,7 @@ if (
         <label for="Province">Province</label><br>
         <input type="text" name="Province" id="Province" value="<?php echo $row["Province"]  ?>" required><br>
         <br><br>
-        <button type="submit">Edit</button><br><br>
+        <button type="submit">Update</button><br><br>
     </form>
     <a href="./index.php">Back to Postal Code list</a>
 </body>

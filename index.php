@@ -12,5 +12,7 @@
     <a href="./pages/Facilities/index.php">Facilities</a><br>
     <a href="./pages/Employees/index.php">Employees</a><br>
     <a href="./pages/PostalCodes/index.php">Postal Codes</a><br>
+    <a href="./pages/Vaccines/index.php">Vaccines</a><br>
+    <a href="./pages/Schedule/index.php">Schedule</a><br>
 </body>
 </html>
