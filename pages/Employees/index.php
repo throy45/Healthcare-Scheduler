@@ -2,7 +2,7 @@
     require_once '../../database.php';
     $statement = $conn->prepare('SELECT * FROM employees');
     $statement->execute();
-    mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['FirstName'], $row['LastName'], $row['Role'], $row['DateOfBirth'], $row['MedicareNumber'], $row['Email'], $row['Citizenship'], $row['PhoneNumber'], $row['Address'])
+    mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['FirstName'], $row['LastName'], $row['Role'], $row['DateOfBirth'], $row['MedicareNumber'], $row['Email'], $row['Citizenship'], $row['PhoneNumber'], $row['Address'], $row['PostalCode'])
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +29,7 @@
                 <th>Citizenship</th>
                 <th>Phone Number</th>
                 <th>Address</th>
+                <th>Postal Code</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -45,6 +46,7 @@
                     <td><?php echo $row['Citizenship'] ?></td>
                     <td><?php echo $row['PhoneNumber'] ?></td>
                     <td><?php echo $row['Address'] ?></td>
+                    <td><?php echo $row['PostalCode'] ?></td>
                     <td>
                         <a href="./edit.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Edit</a>
                         <a href="./delete.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Delete</a>
