@@ -1,3 +1,10 @@
+
+CREATE TABLE PostalCodes (
+  PostalCode CHAR(7) PRIMARY KEY,
+  City VARCHAR(255),
+  Province VARCHAR(255)
+);
+
 CREATE TABLE Facilities (
   FacilityID INT PRIMARY KEY,
   Name VARCHAR(255),
@@ -94,8 +101,3 @@ CREATE TABLE Schedule (
    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
 );
 
-CREATE TABLE PostalCodes (
-  PostalCode CHAR(7) PRIMARY KEY,
-  City VARCHAR(255),
-  Province VARCHAR(255)
-);

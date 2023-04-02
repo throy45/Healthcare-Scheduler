@@ -1,3 +1,33 @@
+INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
+('H3G 1B3', 'Montreal', 'Quebec'),
+('H3G 1Z7', 'Montreal', 'Quebec'),
+('H3G 1A1', 'Montreal', 'Quebec'),
+('H3G 1R5', 'Montreal', 'Quebec'),
+('H3G 2S6', 'Montreal', 'Quebec'),
+('H3G 2C2', 'Montreal', 'Quebec'),
+('H3G 1J5', 'Montreal', 'Quebec'),
+('H3G 1Y2', 'Montreal', 'Quebec'),
+('H3G 2G8', 'Montreal', 'Quebec'),
+('H3G 1G3', 'Montreal', 'Quebec'),
+('X3Y 6S8', 'Toronto', 'Ontario'),
+('L2C 4T9', 'Toronto', 'Ontario'),
+('H3G 1A7', 'Montreal', 'Quebec'),
+('J4X 9T2', 'Brossard', 'Quebec'),
+('J5X 4T6', 'Brossard', 'Quebec'),
+('N5T 2IE', 'Toronto', 'Ontario'),
+('J5T 8G4', 'Toronto', 'Ontario'),
+('H3S 1W8', 'Montreal', 'Quebec'),
+('H4V 1B8', 'Montreal', 'Quebec'),
+('H3J 1C7', 'Montreal', 'Quebec'),
+('H6A 1B4', 'Montreal', 'Quebec'),
+('H8D 1F3', 'Montreal', 'Quebec'),
+('H3S 1W7', 'Montreal', 'Quebec'),
+('H4T 1C3', 'Montreal', 'Quebec'),
+('H6J 8P5', 'Montreal', 'Quebec'),
+('H5G 3S5', 'Montreal', 'Quebec'),
+('H9D 5B5', 'Montreal', 'Quebec'),
+('G1B 0A9', 'Quebec', 'Quebec');
+
 INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address, PostalCode) VALUES
 (1, 'Hospital Maisonneuve Rosemont', 'Hospital', 500, 'www.centralhospital.com', '514-555-1234', '123 Main Street', 'H3G 1B3'),
 (2, 'North CLSC', 'CLSC', 200, 'www.northCLSC.com', '514-555-2345', '456 Queen Street', 'H3G 1Z7'),
@@ -46,7 +76,7 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (31, 'Noemie', 'Duke', 'Administrative personnel', '1975-05-24', '709-002-045', 'noemieduke@email.com', 'Canadian', '514-736-2849', '45 Blood Street', 'H4T 1C3'),
 (32, 'Sarah', 'Lance', 'Administrative personnel', '1976-09-19', '892-173-466', 'sarahlance@email.com', 'Canadian', '514-589-6435', '52 Lake Avenue', 'H6J 8P5'),
 (33, 'Celia', 'Kremer', 'Administrative personnel', '1977-08-24', '911-244-577', 'celiakremer@email.com', 'Canadian', '514-887-625', '25 Bloom Avenue', 'H5G 3S5'),
-(34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5');
+(34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5'),
 (35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9');
 
 INSERT INTO Manager (EmployeeID) VALUES
@@ -202,39 +232,10 @@ INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (7, 29, '2022-12-07', NULL),
 (8, 30, '2022-12-08', NULL),
 (9, 31, '2022-12-09', NULL),
-(10, 32, '2022-12-10', NULL);
+(10, 32, '2022-12-10', NULL),
 (11, 33, '2022-12-11', NULL),
 (12, 34, '2022-12-12', NULL);
 
-INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
-('H3G 1B3', 'Montreal', 'Quebec'),
-('H3G 1Z7', 'Montreal', 'Quebec'),
-('H3G 1A1', 'Montreal', 'Quebec'),
-('H3G 1R5', 'Montreal', 'Quebec'),
-('H3G 2S6', 'Montreal', 'Quebec'),
-('H3G 2C2', 'Montreal', 'Quebec'),
-('H3G 1J5', 'Montreal', 'Quebec'),
-('H3G 1Y2', 'Montreal', 'Quebec'),
-('H3G 2G8', 'Montreal', 'Quebec'),
-('H3G 1G3', 'Montreal', 'Quebec'),
-('X3Y 6S8', 'Toronto', 'Ontario'),
-('L2C 4T9', 'Toronto', 'Ontario'),
-('H3G 1A7', 'Montreal', 'Quebec'),
-('J4X 9T2', 'Brossard', 'Quebec'),
-('J5X 4T6', 'Brossard', 'Quebec'),
-('N5T 2IE', 'Toronto', 'Ontario'),
-('J5T 8G4', 'Toronto', 'Ontario'),
-('H3S 1W8', 'Montreal', 'Quebec'),
-('H4V 1B8', 'Montreal', 'Quebec'),
-('H3J 1C7', 'Montreal', 'Quebec'),
-('H6A 1B4', 'Montreal', 'Quebec'),
-('H8D 1F3', 'Montreal', 'Quebec'),
-('H3S 1W7', 'Montreal', 'Quebec'),
-('H4T 1C3', 'Montreal', 'Quebec'),
-('H6J 8P5', 'Montreal', 'Quebec'),
-('H5G 3S5', 'Montreal', 'Quebec'),
-('H9D 5B5', 'Montreal', 'Quebec'),
-('G1B 0A9', 'Quebec', 'Quebec');
 
 INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (1, 1, '2023-03-06', '08:00', '12:00'),
