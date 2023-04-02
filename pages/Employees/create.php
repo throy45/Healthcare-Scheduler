@@ -45,25 +45,25 @@ if (
     <h1>Add Employee</h1>
     <form action="./create.php" method="post">
         <label for="EmployeeID">Employee ID</label><br>
-        <input type="number" name="EmployeeID" id="EmployeeID" value=100 require><br>
+        <input type="number" name="EmployeeID" id="EmployeeID" require><br>
         <label for="FirstName">First Name</label><br>
-        <input type="text" name="FirstName" id="FirstName" value='John'><br>
+        <input type="text" name="FirstName" id="FirstName"><br>
         <label for="LastName">Last Name</label><br>
-        <input type="text" name="LastName" id="LastName" value='Doe'><br>
+        <input type="text" name="LastName" id="LastName"><br>
         <label for="Role">Role</label><br>
-        <input type="text" name="Role" id="Role" value='Doctor'><br>
+        <input type="text" name="Role" id="Role"><br>
         <label for="DateOfBirth">Date of Birth</label><br>
-        <input type="date" name="DateOfBirth" id="DateOfBirth" value='2023-02-27'><br>
+        <input type="date" name="DateOfBirth" id="DateOfBirth"><br>
         <label for="MedicareNumber">Medicare Number</label><br>
-        <input type="text" name="MedicareNumber" id="MedicareNumber" value=1><br>
+        <input type="text" name="MedicareNumber" id="MedicareNumber"><br>
         <label for="Email">Email</label><br>
-        <input type="text" name="Email" id="Email" value='john@gmail.com'><br>
+        <input type="text" name="Email" id="Email"><br>
         <label for="Citizenship">Citizenship</label><br>
-        <input type="text" name="Citizenship" id="Citizenship" value='Canadian'><br>
+        <input type="text" name="Citizenship" id="Citizenship"><br>
         <label for="PhoneNumber">Phone Number</label><br>
-        <input type="text" name="PhoneNumber" id="PhoneNumber" value=5141231234><br>
+        <input type="text" name="PhoneNumber" id="PhoneNumber"><br>
         <label for="Address">Address</label><br>
-        <input type="text" name="Address" id="Address" value='Guy'><br><br>
+        <input type="text" name="Address" id="Address"><br><br>
         <button type="submit">Add</button><br><br>
     </form>
     <a href="./">Back to Employee list</a>

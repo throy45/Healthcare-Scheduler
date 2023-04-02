@@ -51,25 +51,25 @@ if (
     <h1>Edit Employee</h1>
     <form action="./edit.php" method="post">
         <label for="EmployeeID">Employee ID</label><br>
-        <input type="number" name="EmployeeID" id="EmployeeID" readonly="readonly"  value=<?php echo $row["EmployeeID"]  ?> require><br>
+        <input type="number" name="EmployeeID" id="EmployeeID" readonly="readonly"  value="<?php echo $row["EmployeeID"]  ?>" require><br>
         <label for="FirstName">First Name</label><br>
-        <input type="text" name="FirstName" id="FirstName" value=<?php echo $row["FName"] ?>><br>
+        <input type="text" name="FirstName" id="FirstName" value="<?php echo $row["FName"] ?>"><br>
         <label for="LastName">Last Name</label><br>
-        <input type="text" name="LastName" id="LastName" value=<?php echo $row["LName"] ?>><br>
+        <input type="text" name="LastName" id="LastName" value="<?php echo $row["LName"] ?>"><br>
         <label for="Role">Role</label><br>
-        <input type="text" name="Role" id="Role" value=<?php echo $row["Role"] ?>><br>
+        <input type="text" name="Role" id="Role" value="<?php echo $row["Role"] ?>"><br>
         <label for="DateOfBirth">Date of Birth</label><br>
-        <input type="date" name="DateOfBirth" id="DateOfBirth" value=<?php echo $row["DoBirth"] ?>><br>
+        <input type="date" name="DateOfBirth" id="DateOfBirth" value="<?php echo $row["DoBirth"] ?>"><br>
         <label for="MedicareNumber">Medicare Number</label><br>
-        <input type="text" name="MedicareNumber" id="MedicareNumber" value=<?php echo $row["MedicareNumber"] ?>><br>
+        <input type="text" name="MedicareNumber" id="MedicareNumber" value="<?php echo $row["MedicareNumber"] ?>"><br>
         <label for="Email">Email</label><br>
-        <input type="text" name="Email" id="Email" value=<?php echo $row["Email"] ?>><br>
+        <input type="text" name="Email" id="Email" value="<?php echo $row["Email"] ?>"><br>
         <label for="Citizenship">Citizenship</label><br>
-        <input type="text" name="Citizenship" id="Citizenship" value=<?php echo $row["Citizenship"] ?>><br>
+        <input type="text" name="Citizenship" id="Citizenship" value="<?php echo $row["Citizenship"] ?>"><br>
         <label for="PhoneNumber">Phone Number</label><br>
-        <input type="text" name="PhoneNumber" id="PhoneNumber" value=<?php echo $row["PhoneNumber"] ?>><br>
+        <input type="text" name="PhoneNumber" id="PhoneNumber" value="<?php echo $row["PhoneNumber"] ?>"><br>
         <label for="Address">Address</label><br>
-        <input type="text" name="Address" id="Address" value=<?php echo $row["Address"] ?>><br><br>
+        <input type="text" name="Address" id="Address" value="<?php echo $row["Address"] ?>"><br><br>
         <button type="submit">Update</button><br><br>
     </form>
     <a href="./">Back to Employee list</a>

@@ -1,8 +1,8 @@
 <?php
     require_once '../../database.php';
-    $statement = $conn->prepare('SELECT * FROM facilities');
+    $statement = $conn->prepare('SELECT * FROM Facilities');
     $statement->execute();
-    mysqli_stmt_bind_result($statement, $row['FacilityID'], $row['Name'], $row['Type'], $row['Capacity'], $row['WebAddress'], $row['PhoneNumber'], $row['Address'])
+    mysqli_stmt_bind_result($statement, $row['FacilityID'], $row['Name'], $row['Type'], $row['Capacity'], $row['WebAddress'], $row['PhoneNumber'], $row['Address'], $row['PostalCode']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +15,7 @@
 </head>
 <body>
     <h1>List of Facilities</h1>
+    <a href="./create.php">Add a new Facility</a>
     <table>
         <thead>
             <tr>
@@ -22,9 +23,10 @@
                 <th>Name</th>
                 <th>Type</th>
                 <th>Capacity</th>
-                <th>WebAddress</th>
+                <th>Web Address</th>
                 <th>Phone Number</th>
                 <th>Address</th>
+                <th>Postal Code</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -38,9 +40,10 @@
                     <td><?php echo $row['WebAddress'] ?></td>
                     <td><?php echo $row['PhoneNumber'] ?></td>
                     <td><?php echo $row['Address'] ?></td>
+                    <td><?php echo $row['PostalCode'] ?></td>
                     <td>
                         <a href="./edit.php?FacilityID=<?php echo $row["FacilityID"] ?>">Edit</a>
-                        <a href="./edit.php?FacilityID=<?php echo $row["FacilityID"] ?>">Delete</a>
+                        <a href="./delete.php?FacilityID=<?php echo $row["FacilityID"] ?>">Delete</a>
                     </td>
                 </tr>
             <?php }; ?>
