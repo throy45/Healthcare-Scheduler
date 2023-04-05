@@ -1,6 +1,6 @@
 <?php require_once '../../database.php'; 
     include '../header.php';
-    $statement = $conn->prepare('SELECT * FROM Infections, Employees WHERE Infections.EmployeeID = Employees.EmployeeID');
+    $statement = $conn->prepare('SELECT * FROM Infections, Employees WHERE Infections.EmployeeID = Employees.EmployeeID ORDER BY Infections.EmployeeID, Type, Infections.Date DESC');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['InfectionID'], $row['Type'], $row['Date'], $row['EmployeeID2'], $row['FName'], $row['LName'], $row['Role'], $row['DateOfBirth'], $row['MedicareNumber'], $row['Email'], $row['Citizenship'], $row['PhoneNumber'], $row['Address'], $row['PostalCode'])
 ?>
