@@ -1,16 +1,9 @@
-<?php
-require_once '../../database.php';
+<?php require_once '../../database.php';
 
-if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['StartDate'])) {
-    $FacilityID = $_GET['FacilityID'];
+if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
     $EmployeeID = $_GET['EmployeeID'];
-    $StartDate = $_GET['StartDate'];
-
-    $statement = $conn->prepare("DELETE FROM Managers WHERE FacilityID = ? AND EmployeeID = ? AND StartDate = ?");
-    $statement->bind_param("iii", $FacilityID, $EmployeeID, $StartDate);
+    $statement = $conn->prepare("DELETE FROM Manager WHERE EmployeeID = $EmployeeID");
     $statement->execute();
-
     header("Location: ./index.php");
-    exit();
-}
+};
 ?>

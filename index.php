@@ -14,8 +14,8 @@
     <a href="./pages/Employment/index.php">Employment</a><br>
     <a href="./pages/Facilities/index.php">Facilities</a><br>
     <a href="./pages/Infections/index.php">Infections</a><br>
-    <a href="./pages/Manager/index.php">Manager</a><br>
     <a href="./pages/Managers/index.php">Managers</a><br>
+    <a href="./pages/Managing/index.php">Managing</a><br>
     <a href="./pages/PostalCodes/index.php">Postal Codes</a><br>
     <a href="./pages/Schedule/index.php">Schedule</a><br>
     <a href="./pages/Vaccines/index.php">Vaccines</a><br>

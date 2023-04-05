@@ -35,10 +35,10 @@ if (
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Manager</title>
+    <title>Edit Managing relation</title>
 </head>
 <body>
-    <h1>Edit Manager</h1>
+    <h1>Edit Managing relation</h1>
     <form action="./edit.php" method="post">
         <label for="FacilityID">Facility ID</label><br>
         <input type="number" name="FacilityID" id="FacilityID" readonly="readonly" value="<?php echo $row["FacilityID"]  ?>" require><br>
@@ -50,6 +50,6 @@ if (
         <input type="date" name="EndDate" id="EndDate" value="<?php echo $row["EndDate"] ?>"><br><br>
         <button type="submit">Update</button><br><br>
     </form>
-    <a href="./">Back to Manager list</a>
+    <a href="./">Back to Managing relation list</a>
 </body>
 </html>
