@@ -1,4 +1,6 @@
 <?php require_once '../../database.php'; 
+    include '../header.php';
+  
 if (isset($_GET['PostalCode']) && !empty($_GET['PostalCode'])) {
     $PostalCode = urldecode($_GET['PostalCode']);
     $result = $conn->query("SELECT * FROM PostalCodes WHERE PostalCode = '$PostalCode'");

@@ -1,5 +1,6 @@
-<?php 
-require_once '../../database.php'; 
+<?php require_once '../../database.php'; 
+    include '../header.php';
+  
 if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['InfectionID']) && !empty($_GET['InfectionID'])) {
   $EmployeeID = $_GET['EmployeeID'];
   $InfectionID = $_GET['InfectionID'];

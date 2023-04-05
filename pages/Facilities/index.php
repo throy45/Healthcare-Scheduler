@@ -1,5 +1,5 @@
-<?php
-    require_once '../../database.php';
+<?php require_once '../../database.php'; 
+    include '../header.php';
     $statement = $conn->prepare('SELECT * FROM Facilities');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['FacilityID'], $row['Name'], $row['Type'], $row['Capacity'], $row['WebAddress'], $row['PhoneNumber'], $row['Address'], $row['PostalCode']);

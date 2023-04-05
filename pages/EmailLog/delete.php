@@ -1,4 +1,5 @@
 <?php require_once '../../database.php';
+    include '../header.php';
 
 if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) 
     && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) 
