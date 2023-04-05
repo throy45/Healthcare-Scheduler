@@ -9,7 +9,9 @@
 </head>
 <body>
     <h1>Welcome to HFESTS web app</h1>
+    <a href="./pages/EmailLog/index.php">EmailLog</a><br>
     <a href="./pages/Employees/index.php">Employees</a><br>
+    <a href="./pages/Employment/index.php">Employment</a><br>
     <a href="./pages/Facilities/index.php">Facilities</a><br>
     <a href="./pages/Infections/index.php">Infections</a><br>
     <a href="./pages/Manager/index.php">Manager</a><br>
