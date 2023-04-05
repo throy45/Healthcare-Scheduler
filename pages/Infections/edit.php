@@ -1,16 +1,11 @@
 <?php 
 require_once '../../database.php'; 
-if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
-    $EmployeeID = $_GET['EmployeeID'];
-    $result = $conn->query("SELECT * FROM Infection WHERE EmployeeID = $EmployeeID");
-    $row = $result->fetch_assoc();
-}
-if (isset($_GET['InfectionID']) && !empty($_GET['InfectionID'])) {
-    $InfectionID = $_GET['InfectionID'];
-    $result = $conn->query("SELECT * FROM Infection WHERE InfectionID = $InfectionID");
-    $row = $result->fetch_assoc();
-}
-if (
+if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['InfectionID']) && !empty($_GET['InfectionID'])) {
+  $EmployeeID = $_GET['EmployeeID'];
+  $InfectionID = $_GET['InfectionID'];
+  $result = $conn->query("SELECT * FROM Infections WHERE EmployeeID = $EmployeeID AND InfectionID = $InfectionID");
+  $row = $result->fetch_assoc();
+} else if (
   isset($_POST["EmployeeID"]) && 
   isset($_POST["InfectionID"]) && 
   isset($_POST["Type"]) && 
@@ -42,16 +37,14 @@ if (
 <body>
   <h1>Edit Infections</h1>
   <form action="./edit.php" method="post">
-    <label for="EmployeeID">Employee ID</label><br>
-    <input type="number" name="EmployeeID" id="EmployeeID" readonly="readonly" value="<?php echo $row["EmployeeID"]  ?>" required><br>
-    <label for="InfectionID">InfectionID</label><br>
-    <input type="number" name="InfectionID" id="InfectionID" value="<?php echo $row["InfectionID"] ?>" required><br>
-    <label for="Type">Type</label><br>
-    <input type="text" name="Type" id="Type" value="<?php echo $row["Type"]  ?>" required><br>
-    <label for="Date">Date</label><br>
-    <input type="number" name="Date" id="Date" value="<?php echo $row["Date"]  ?>" required><br>
-    <button type="submit">Add</button><br><br>
-  </form>
+        <input type="hidden" name="EmployeeID" value="<?php echo $row["EmployeeID"] ?>">
+        <input type="hidden" name="InfectionID" value="<?php echo $row["InfectionID"] ?>">
+        <label for="Type">Type</label><br>
+        <input type="text" name="Type" id="Type" value="<?php echo $row["Type"] ?>"><br>
+        <label for="Date">Date</label><br>
+        <input type="date" name="Date" id="Date" value="<?php echo $row["Date"] ?>"><br><br>
+        <button type="submit">Update</button><br><br>
+    </form>
   <a href="./index.php">Back to Infections list</a>
 </body>
 </html>

@@ -25,6 +25,7 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
 </head>
 <body>
     <h1>Schedule</h1>
+    <a href="./add.php">Add a Schedule</a>
     <?php if (count($schedules) > 0): ?>
         <table>
             <thead>
@@ -52,6 +53,6 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
         <p>No schedules found.</p>
     <?php endif; ?>
     <br>
-    <a href="./add.php">Add a Schedule</a>
+    <a href="../../index.php">Back to main page</a>
 </body>
 </html>
