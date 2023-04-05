@@ -1,4 +1,6 @@
 <?php require_once '../../database.php'; 
+    include '../header.php';
+  
 
 if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Date']) && isset($_GET['StartTime'])) {
     $FacilityID = $_GET['FacilityID'];

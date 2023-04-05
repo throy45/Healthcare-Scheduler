@@ -1,5 +1,6 @@
 <?php require_once '../../database.php'; 
-
+    include '../header.php';
+  
 if (
     isset($_POST["PostalCode"]) && 
     isset($_POST["City"]) && 

@@ -1,5 +1,5 @@
-<?php
-    require_once '../../database.php';
+<?php require_once '../../database.php'; 
+    include '../header.php';
     $statement = $conn->prepare('SELECT * FROM PostalCodes');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['PostalCode'], $row['City'], $row['Province']);

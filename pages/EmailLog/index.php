@@ -1,5 +1,5 @@
-<?php
-    require_once '../../database.php';
+<?php require_once '../../database.php'; 
+    include '../header.php';
     $statement = $conn->prepare('SELECT * FROM EmailLog');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['FacilityID'], $row['EmployeeID'], $row['Date'], $row['Subject'], $row['Body']);

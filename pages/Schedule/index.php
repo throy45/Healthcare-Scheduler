@@ -1,5 +1,5 @@
-<?php 
-require_once '../../database.php'; 
+<?php require_once '../../database.php'; 
+    include '../header.php';
 
 // Get all schedules for a specific employee
 if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {

@@ -1,5 +1,6 @@
-<?php 
-require_once '../../database.php'; 
+<?php require_once '../../database.php'; 
+    include '../header.php';
+  
 if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID'])) {
     $FacilityID = $_GET['FacilityID'];
     $result = $conn->query("SELECT * FROM Facilities WHERE FacilityID = $FacilityID");

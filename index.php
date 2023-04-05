@@ -1,4 +1,5 @@
-<?php require_once 'database.php'; ?>
+<?php require_once 'database.php'; 
+    include './pages/header.php';?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

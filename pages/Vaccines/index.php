@@ -1,5 +1,5 @@
-<?php
-    require_once '../../database.php';
+<?php require_once '../../database.php'; 
+    include '../header.php';
     $statement = $conn->prepare('SELECT * FROM Vaccines');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['FacilityID'], $row['VaccineID'], $row['Type'], $row['DoseNumber'], $row['Date']);
