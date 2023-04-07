@@ -17,22 +17,6 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("SELECT Type, MAX(Date) as InfectedDate FROM Employees e
-                                LEFT JOIN Infections i ON e.EmployeeID = i.EmployeeID
-                                WHERE e.EmployeeID = ? AND e.Type IN ('Nurse', 'Doctor')
-                                GROUP BY e.EmployeeID");
-        $stmt->bind_param("i", $EmployeeID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        if ($row && $row["InfectedDate"] && $row["Type"] && $row["Type"] !== "" && $row["Type"] !== null && $row["Type"] !== "null") {
-            $infectedDate = $row["InfectedDate"];
-            $employeeType = $row["Type"];
-            if (date_add(new DateTime($infectedDate), new DateInterval("P14D")) > new DateTime($Date)) {
-                throw new Exception("Cannot schedule an infected nurse or doctor within two weeks of infection.");
-            }
-        }
-
         $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) 
                                 SELECT ?,?,?,?,? 
                                 FROM dual
@@ -49,10 +33,24 @@ if (
         if ($stmt->affected_rows == 0) {
             throw new Exception("Error: Schedule conflict or more than 4 weeks ahead.");
         }
+        
+        $email_subject = "Schedule Assignment Cancellation";
+        $email_body = "Your schedule assignment has been cancelled due to a COVID-19 infection in your team. Please contact your supervisor for further instructions.";
+        $headers = "From: schedule@yourcompany.com";
+        
+        $stmt = $conn->prepare("SELECT Email FROM Employees WHERE EmployeeID = ? AND Type IN ('Nurse', 'Doctor')");
+        $stmt->bind_param("i", $EmployeeID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            mail($row["Email"], $email_subject, $email_body, $headers);
+        }
+        
         header("Location: ./index.php");
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
     }
+
 }
 ?>
 
