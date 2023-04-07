@@ -16,21 +16,29 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-   $conn->autocommit(FALSE);
-
 try {
-  $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
-  $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
-  $stmt->execute();
-  
-  $conn->commit(); 
-  header("Location: ./index.php");
+    $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) 
+                            SELECT ?,?,?,?,? 
+                            FROM dual
+                            WHERE NOT EXISTS (
+                                SELECT * FROM Schedule
+                                WHERE EmployeeID = ?
+                                AND Date = ?
+                                AND ((StartTime <= ? AND EndTime > ? - INTERVAL 1 HOUR)
+                                    OR (StartTime >= ? AND StartTime < ? + INTERVAL 1 HOUR))
+                                OR StartTime > (NOW() + INTERVAL 4 WEEK)
+                            )");
+    $stmt->bind_param("iisssisssss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime, $EmployeeID, $Date, $StartTime, $StartTime, $StartTime, $EndTime);
+    $stmt->execute();
+    if ($stmt->affected_rows == 0) {
+        throw new Exception("Error: Schedule conflict or more than 4 weeks ahead.");
+    }
+    header("Location: ./index.php");
 } catch (Exception $e) {
-  $conn->rollback(); 
-  echo "Error: " . $e->getMessage();
+    echo "Error: " . $e->getMessage();
 }
 
-$conn->autocommit(TRUE); 
+
 }
 ?>
 
