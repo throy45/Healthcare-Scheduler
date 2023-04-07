@@ -33,11 +33,15 @@ if (
     $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address' WHERE EmployeeID=$EmployeeID");
 
     
-    if ($stmt->execute()){
+    if ($stmt->execute()) {
         header("Location: ./index.php");
     } else {
-        echo "Something went wrong. Please try again later.";
-        header("Location: ./edit.php?EmployeeID=".$EmployeeID);
+        $error_message = $conn->errorInfo()[2];
+        if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
+            echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
 }
 ?>
