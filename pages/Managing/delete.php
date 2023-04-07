@@ -6,7 +6,7 @@ if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Sta
     $EmployeeID = $_GET['EmployeeID'];
     $StartDate = $_GET['StartDate'];
 
-    $statement = $conn->prepare("DELETE FROM Managers WHERE FacilityID = ? AND EmployeeID = ? AND StartDate = ?");
+    $statement = $conn->prepare("DELETE FROM Managing WHERE FacilityID = ? AND EmployeeID = ? AND StartDate = ?");
     $statement->bind_param("iii", $FacilityID, $EmployeeID, $StartDate);
     $statement->execute();
 

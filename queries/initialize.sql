@@ -1,3 +1,106 @@
+
+CREATE TABLE PostalCodes (
+  PostalCode CHAR(7) PRIMARY KEY,
+  City VARCHAR(255),
+  Province VARCHAR(255)
+);
+
+CREATE TABLE Facilities (
+  FacilityID INT PRIMARY KEY,
+  Name VARCHAR(255),
+  Type VARCHAR(255),
+  Capacity INT,
+  WebAddress VARCHAR(255),
+  PhoneNumber VARCHAR(255),
+  Address VARCHAR(255),
+  PostalCode VARCHAR(255),
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+);
+
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  FName VARCHAR(255),
+  LName VARCHAR(255),
+  Role VARCHAR(255),
+  DoBirth DATE,
+  MedicareNumber VARCHAR(255) NOT NULL UNIQUE,
+  Email VARCHAR(255),
+  Citizenship VARCHAR(255),
+  PhoneNumber VARCHAR(255),
+  Address VARCHAR(255),
+  PostalCode VARCHAR(255),
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+);
+
+CREATE TABLE Managers (
+  EmployeeID INT PRIMARY KEY,
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+CREATE TABLE Vaccines (
+  EmployeeID INT,
+  FacilityID INT,
+  VaccineID INT NOT NULL,
+  Type VARCHAR(255),
+  DoseNumber INT,
+  Date DATE,
+  PRIMARY KEY (EmployeeID, FacilityID, VaccineID),
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+  FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID)
+);
+
+CREATE TABLE Infections (
+  EmployeeID INT,
+  InfectionID INT NOT NULL,
+  Type VARCHAR(255),
+  Date DATE,
+  PRIMARY KEY (EmployeeID, InfectionID),
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+CREATE TABLE Employment (
+  FacilityID INT,
+  EmployeeID INT,
+  ContractID INT,
+  StartDate DATE NOT NULL,
+  EndDate DATE,
+  PRIMARY KEY (FacilityID, EmployeeID, ContractID),
+  FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+CREATE TABLE Managing (
+  FacilityID INT,
+  EmployeeID INT,
+  StartDate DATE NOT NULL,
+  EndDate DATE,
+  PRIMARY KEY (FacilityID, EmployeeID, StartDate),
+  FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
+  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID)
+);
+
+CREATE TABLE EmailLog (
+   FacilityID INT,
+   EmployeeID INT,
+   Date DATE,
+   Subject VARCHAR(255),
+   Body TEXT,
+   PRIMARY KEY (FacilityID, EmployeeID, Date),
+   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
+   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+CREATE TABLE Schedule (
+   FacilityID INT,
+   EmployeeID INT,
+   Date DATE,
+   StartTime TIME,
+   EndTime TIME,
+   PRIMARY KEY (FacilityID, EmployeeID, Date, StartTime),
+   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
+   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
 ('H3G 1Z7', 'Montreal', 'Quebec'),
@@ -79,7 +182,7 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5'),
 (35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9');
 
-INSERT INTO Manager (EmployeeID) VALUES
+INSERT INTO Managers (EmployeeID) VALUES
 (6),
 (14),
 (25),
@@ -222,7 +325,7 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (10, 19, 65, '2023-02-12', NULL),
 (6, 35, 66, '2022-12-01', NULL);
 
-INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES
+INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
 (2, 25, '2022-12-02', NULL),
 (3, 26, '2022-12-03', NULL),

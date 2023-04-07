@@ -6,7 +6,7 @@ if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Sta
     $FacilityID = $_GET['FacilityID'];
     $EmployeeID = $_GET['EmployeeID'];
     $StartDate = $_GET['StartDate'];
-    $result = $conn->query("SELECT * FROM Managers WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND StartDate = '$StartDate'");
+    $result = $conn->query("SELECT * FROM Managing WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND StartDate = '$StartDate'");
     $row = $result->fetch_assoc();
 }
 if (
@@ -20,7 +20,7 @@ if (
     $StartDate = $_POST["StartDate"];
     $EndDate = $_POST["EndDate"];
 
-    $stmt = $conn->prepare("UPDATE Managers SET EndDate='$EndDate' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND StartDate='$StartDate'");
+    $stmt = $conn->prepare("UPDATE Managing SET EndDate='$EndDate' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND StartDate='$StartDate'");
 
     if ($stmt->execute()){
         header("Location: ./index.php");
