@@ -25,8 +25,13 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime' AND NOT EXISTS (SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR)))");
+        $stmt = $conn->prepare("SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR))");
         $stmt->execute();
+        $conflicts = $stmt->fetchAll();
+        if (count($conflicts) > 1 || (count($conflicts) == 1 && $conflicts[0]["FacilityID"] != $FacilityID)) {
+            throw new PDOException("CheckScheduleConflict");
+        }
+
         $empType = $conn->query("SELECT Type FROM Employees WHERE EmployeeID = $EmployeeID")->fetch_assoc()["Type"];
         $infectedDate = $conn->query("SELECT MAX(Date) FROM Infections WHERE EmployeeID = $EmployeeID AND Type = 'COVID-19'")->fetch_assoc()["MAX(Date)"];
         $dateDiff = strtotime($Date) - strtotime($infectedDate);
@@ -36,6 +41,9 @@ if (
                 throw new PDOException("CheckScheduleConflict");
             }
         }
+        
+        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime'");
+        $stmt->execute();
         
         header("Location: ./index.php");
     } catch (PDOException $e) {
