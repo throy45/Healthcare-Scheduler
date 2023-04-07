@@ -16,29 +16,43 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-try {
-    $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) 
-                            SELECT ?,?,?,?,? 
-                            FROM dual
-                            WHERE NOT EXISTS (
-                                SELECT * FROM Schedule
-                                WHERE EmployeeID = ?
-                                AND Date = ?
-                                AND ((StartTime <= ? AND EndTime > ? - INTERVAL 1 HOUR)
-                                    OR (StartTime >= ? AND StartTime < ? + INTERVAL 1 HOUR))
-                                OR StartTime > (NOW() + INTERVAL 4 WEEK)
-                            )");
-    $stmt->bind_param("iisssisssss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime, $EmployeeID, $Date, $StartTime, $StartTime, $StartTime, $EndTime);
-    $stmt->execute();
-    if ($stmt->affected_rows == 0) {
-        throw new Exception("Error: Schedule conflict or more than 4 weeks ahead.");
+    try {
+        $stmt = $conn->prepare("SELECT Type, MAX(Date) as InfectedDate FROM Employees e
+                                LEFT JOIN Infections i ON e.EmployeeID = i.EmployeeID
+                                WHERE e.EmployeeID = ? AND e.Type IN ('Nurse', 'Doctor')
+                                GROUP BY e.EmployeeID");
+        $stmt->bind_param("i", $EmployeeID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        if ($row && $row["InfectedDate"] && $row["Type"] && $row["Type"] !== "" && $row["Type"] !== null && $row["Type"] !== "null") {
+            $infectedDate = $row["InfectedDate"];
+            $employeeType = $row["Type"];
+            if (date_add(new DateTime($infectedDate), new DateInterval("P14D")) > new DateTime($Date)) {
+                throw new Exception("Cannot schedule an infected nurse or doctor within two weeks of infection.");
+            }
+        }
+
+        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) 
+                                SELECT ?,?,?,?,? 
+                                FROM dual
+                                WHERE NOT EXISTS (
+                                    SELECT * FROM Schedule
+                                    WHERE EmployeeID = ?
+                                    AND Date = ?
+                                    AND ((StartTime <= ? AND EndTime > ? - INTERVAL 1 HOUR)
+                                        OR (StartTime >= ? AND StartTime < ? + INTERVAL 1 HOUR))
+                                    OR StartTime > (NOW() + INTERVAL 4 WEEK)
+                                )");
+        $stmt->bind_param("iisssisssss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime, $EmployeeID, $Date, $StartTime, $StartTime, $StartTime, $EndTime);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            throw new Exception("Error: Schedule conflict or more than 4 weeks ahead.");
+        }
+        header("Location: ./index.php");
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
-    header("Location: ./index.php");
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
-}
-
-
 }
 ?>
 
