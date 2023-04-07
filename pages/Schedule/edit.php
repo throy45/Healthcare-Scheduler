@@ -1,5 +1,5 @@
-<?php 
-require_once '../../database.php'; 
+<?php
+require_once '../../database.php';
 include '../header.php';
 
 if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Date']) && isset($_GET['StartTime'])) {
@@ -25,15 +25,23 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime' AND NOT EXISTS (SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR))) AND '$StartTime' <= (NOW() + INTERVAL 4 WEEK)");
+        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime' AND NOT EXISTS (SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR)))");
         $stmt->execute();
+        $empType = $conn->query("SELECT Type FROM Employees WHERE EmployeeID = $EmployeeID")->fetch_assoc()["Type"];
+        $infectedDate = $conn->query("SELECT MAX(Date) FROM Infections WHERE EmployeeID = $EmployeeID AND Type = 'COVID-19'")->fetch_assoc()["MAX(Date)"];
+        $dateDiff = strtotime($Date) - strtotime($infectedDate);
+        $daysSinceInfection = floor($dateDiff / (60 * 60 * 24));
+        if ($empType == "Nurse" || $empType == "Doctor") {
+            if ($infectedDate != NULL && $daysSinceInfection < 14) {
+                throw new PDOException("CheckScheduleConflict");
+            }
+        }
+        
         header("Location: ./index.php");
     } catch (PDOException $e) {
         $error_message = $e->getMessage();
         if (strpos($error_message, 'CheckScheduleConflict') !== false) {
-            echo "Error: Employee is scheduled at a conflicting time.";
-        } elseif (strpos($error_message, 'FourWeekSchedule') !== false) {
-            echo "Error: Cannot schedule more than four weeks ahead of time.";
+            echo "Error: Cannot schedule an infected nurse or doctor within two weeks of infection.";
         } else {
             echo "Something went wrong. Please try again later.";
         }
