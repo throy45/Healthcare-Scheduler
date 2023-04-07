@@ -40,7 +40,12 @@ if (
     <label for="InfectionID">InfectionID</label><br>
     <input type="text" name="InfectionID" id="InfectionID" required><br>
     <label for="Type">Type</label><br>
-    <input type="text" name="Type" id="Type" required><br>
+        <select name="Type" id="Type" required>
+          <option value="COVID-19">COVID-19</option>
+          <option value="SARS-Cov-2 Variant">SARS-Cov-2 Variant</option>
+          <option value="Flu">Flu</option>
+          <option value="Other">Other</option>
+        </select><br>
     <label for="Date">Date</label><br>
     <input type="number" name="Date" id="Date" required><br>
     <button type="submit">Add</button><br><br>

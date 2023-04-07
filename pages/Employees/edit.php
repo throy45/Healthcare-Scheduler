@@ -59,7 +59,16 @@ if (
         <label for="LastName">Last Name</label><br>
         <input type="text" name="LastName" id="LastName" value="<?php echo $row["LName"] ?>"><br>
         <label for="Role">Role</label><br>
-        <input type="text" name="Role" id="Role" value="<?php echo $row["Role"] ?>"><br>
+        <select name="Role" id="Role" required>
+            <option value="Nurse" <?php if($row["Role"]=="Nurse") echo "selected"; ?>>Nurse</option>
+            <option value="Doctor" <?php if($row["Role"]=="Doctor") echo "selected"; ?>>Doctor</option>
+            <option value="Cashier" <?php if($row["Role"]=="Cashier") echo "selected"; ?>>Cashier</option>
+            <option value="Pharmacist" <?php if($row["Role"]=="Pharmacist") echo "selected"; ?>>Pharmacist</option>
+            <option value="Receptionist" <?php if($row["Role"]=="Receptionist") echo "selected"; ?>>Receptionist</option>
+            <option value="Admin personnel" <?php if($row["Role"]=="Admin personnel") echo "selected"; ?>>Administrative Personnel</option>
+            <option value="Security personnel" <?php if($row["Role"]=="Security personnel") echo "selected"; ?>>Security Personnel</option>
+            <option value="Regular employee" <?php if($row["Role"]=="Regular employee") echo "selected"; ?>>Regular Employee</option>
+        </select><br>
         <label for="DateOfBirth">Date of Birth</label><br>
         <input type="date" name="DateOfBirth" id="DateOfBirth" value="<?php echo $row["DoBirth"] ?>"><br>
         <label for="MedicareNumber">Medicare Number</label><br>

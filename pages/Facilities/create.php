@@ -54,7 +54,13 @@ if (
     <label for="Name">Name</label><br>
     <input type="text" name="Name" id="Name" required><br>
     <label for="Type">Type</label><br>
-    <input type="text" name="Type" id="Type" required><br>
+    <select name="Type" id="Type" required>
+      <option value="Hospital">Hospital</option>
+      <option value="CLSC">CLSC</option>
+      <option value="Clinic">Clinic</option>
+      <option value="Pharmacy">Pharmacy</option>
+      <option value="Special Installment">Special instalment</option>
+    </select><br>
     <label for="Capacity">Capacity</label><br>
     <input type="number" name="Capacity" id="Capacity" required><br>
     <label for="WebAddress">Web Address</label><br>
