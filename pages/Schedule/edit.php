@@ -25,13 +25,15 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime' AND NOT EXISTS (SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR)))");
+        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime' AND NOT EXISTS (SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR))) AND '$StartTime' <= (NOW() + INTERVAL 4 WEEK)");
         $stmt->execute();
         header("Location: ./index.php");
     } catch (PDOException $e) {
         $error_message = $e->getMessage();
         if (strpos($error_message, 'CheckScheduleConflict') !== false) {
             echo "Error: Employee is scheduled at a conflicting time.";
+        } elseif (strpos($error_message, 'FourWeekSchedule') !== false) {
+            echo "Error: Cannot schedule more than four weeks ahead of time.";
         } else {
             echo "Something went wrong. Please try again later.";
         }
