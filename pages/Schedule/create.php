@@ -16,14 +16,21 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-    try {
-        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
-        $stmt->execute();
-        header("Location: ./index.php");
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
-    }
+   $conn->autocommit(FALSE);
+
+try {
+  $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
+  $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
+  $stmt->execute();
+  
+  $conn->commit(); 
+  header("Location: ./index.php");
+} catch (Exception $e) {
+  $conn->rollback(); 
+  echo "Error: " . $e->getMessage();
+}
+
+$conn->autocommit(TRUE); 
 }
 ?>
 
