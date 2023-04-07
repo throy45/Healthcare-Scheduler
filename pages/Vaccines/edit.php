@@ -53,7 +53,14 @@ if (
         <label for="VaccineID">Vaccine ID</label><br>
         <input type="number" name="VaccineID" id="VaccineID" readonly="readonly" value="<?php echo $row["VaccineID"] ?>" required><br>
         <label for="Type">Type</label><br>
-        <input type="text" name="Type" id="Type" value="<?php echo $row["Type"] ?>"><br>
+        <select name="Type" id="Type" required>
+            <option value="Pfizer" <?php if($row["Type"]=="Pfizer") echo "selected"; ?>>Pfizer</option>
+            <option value="Moderna" <?php if($row["Type"]=="Moderna") echo "selected"; ?>>Moderna</option>
+            <option value="AstraZeneca" <?php if($row["Type"]=="AstraZeneca") echo "selected"; ?>>AstraZeneca</option>
+            <option value="Johnson & Johnson" <?php if($row["Type"]=="Johnson & Johnson") echo "selected"; ?>>Johnson & Johnson</option>
+            <option value="Other" <?php if($row["Type"]=="Other") echo "selected"; ?>>Other</option>
+        </select><br>
+
         <label for="DoseNumber">Dose Number</label><br>
         <input type="number" name="DoseNumber" id="DoseNumber" value="<?php echo $row["DoseNumber"] ?>"><br>
         <label for="Date">Date</label><br>

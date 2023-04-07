@@ -51,7 +51,13 @@ if (
     <label for="Name">Name</label><br>
     <input type="text" name="Name" id="Name" value="<?php echo $row["Name"] ?>" required><br>
     <label for="Type">Type</label><br>
-    <input type="text" name="Type" id="Type" value="<?php echo $row["Type"]  ?>" required><br>
+    <select name="Type" id="Type" required>
+      <option value="Hospital" <?php if($row["Type"]=="Hospital") echo "selected"; ?>>Hospital</option>
+      <option value="CLSC" <?php if($row["Type"]=="CLSC") echo "selected"; ?>>CLSC</option>
+      <option value="Clinic" <?php if($row["Type"]=="Clinic") echo "selected"; ?>>Clinic</option>
+      <option value="Pharmacy" <?php if($row["Type"]=="Pharmacy") echo "selected"; ?>>Pharmacy</option>
+      <option value="Special Instalment" <?php if($row["Type"]=="Special instalment") echo "selected"; ?>>Special Installment</option>
+    </select><br>
     <label for="Capacity">Capacity</label><br>
     <input type="number" name="Capacity" id="Capacity" value="<?php echo $row["Capacity"]  ?>" required><br>
     <label for="WebAddress">Web Address</label><br>

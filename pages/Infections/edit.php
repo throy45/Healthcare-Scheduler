@@ -41,7 +41,12 @@ if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['In
         <input type="hidden" name="EmployeeID" value="<?php echo $row["EmployeeID"] ?>">
         <input type="hidden" name="InfectionID" value="<?php echo $row["InfectionID"] ?>">
         <label for="Type">Type</label><br>
-        <input type="text" name="Type" id="Type" value="<?php echo $row["Type"] ?>"><br>
+        <select name="Type" id="Type" required>
+          <option value="COVID-19" <?php if($row["Type"]=="COVID-19") echo "selected"; ?>>COVID-19</option>
+          <option value="SARS-Cov-2 Variant" <?php if($row["Type"]=="SARS-Cov-2 Variant") echo "selected"; ?>>SARS-Cov-2 Variant</option>
+          <option value="Flu" <?php if($row["Type"]=="Flu") echo "selected"; ?>>Flu</option>
+          <option value="Other" <?php if($row["Type"]=="Other") echo "selected"; ?>>Other</option>
+        </select><br>
         <label for="Date">Date</label><br>
         <input type="date" name="Date" id="Date" value="<?php echo $row["Date"] ?>"><br><br>
         <button type="submit">Update</button><br><br>

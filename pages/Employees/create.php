@@ -53,7 +53,16 @@ if (
         <label for="LastName">Last Name</label><br>
         <input type="text" name="LastName" id="LastName"><br>
         <label for="Role">Role</label><br>
-        <input type="text" name="Role" id="Role"><br>
+        <select name="Role" id="Role">
+            <option value="Nurse">Nurse</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Cashier">Cashier</option>
+            <option value="Pharmacist">Pharmacist</option>
+            <option value="Receptionist">Receptionist</option>
+            <option value="Admin personnel">Administrative Personnel</option>
+            <option value="Security personnel">Security Personnel</option>
+            <option value="Regular employee">Regular Employee</option>
+        </select><br>
         <label for="DateOfBirth">Date of Birth</label><br>
         <input type="date" name="DateOfBirth" id="DateOfBirth"><br>
         <label for="MedicareNumber">Medicare Number</label><br>

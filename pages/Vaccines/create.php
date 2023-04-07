@@ -45,7 +45,15 @@ if (
         <label for="VaccineID">Vaccine ID</label><br>
         <input type="number" name="VaccineID" id="VaccineID" required><br>
         <label for="Type">Type</label><br>
-        <input type="text" name="Type" id="Type"><br>
+        <select name="Type" id="Type" required>
+        <option value="">Select Type</option>
+            <option value="Pfizer">Pfizer</option>
+            <option value="Moderna">Moderna</option>
+            <option value="AstraZeneca">AstraZeneca</option>
+            <option value="Johnson & Johnson">Johnson & Johnson</option>
+            <option value="Other">Other</option>
+        </select><br>
+
         <label for="DoseNumber">Dose Number</label><br>
         <input type="number" name="DoseNumber" id="DoseNumber"><br>
         <label for="Date">Date</label><br>
