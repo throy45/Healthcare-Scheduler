@@ -1,6 +1,6 @@
 <?php require_once '../../database.php'; 
     include '../header.php';
-    $statement = $conn->prepare('SELECT * FROM Manager, Employees WHERE Manager.EmployeeID = Employees.EmployeeID');
+    $statement = $conn->prepare('SELECT * FROM Managers, Employees WHERE Managers.EmployeeID = Employees.EmployeeID');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['EmployeeID2'], $row['FirstName'], $row['LastName'], $row['Role'], $row['DateOfBirth'], $row['MedicareNumber'], $row['Email'], $row['Citizenship'], $row['PhoneNumber'], $row['Address'], $row['PostalCode'])
 ?>

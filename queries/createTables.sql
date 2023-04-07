@@ -32,7 +32,7 @@ CREATE TABLE Employees (
   FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
 );
 
-CREATE TABLE Manager (
+CREATE TABLE Managers (
   EmployeeID INT PRIMARY KEY,
   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
 );
@@ -69,14 +69,14 @@ CREATE TABLE Employment (
   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
 );
 
-CREATE TABLE Managers (
+CREATE TABLE Managing (
   FacilityID INT,
   EmployeeID INT,
   StartDate DATE NOT NULL,
   EndDate DATE,
   PRIMARY KEY (FacilityID, EmployeeID, StartDate),
   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (EmployeeID) REFERENCES Manager(EmployeeID)
+  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID)
 );
 
 CREATE TABLE EmailLog (

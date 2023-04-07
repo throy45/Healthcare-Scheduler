@@ -79,7 +79,7 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5'),
 (35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9');
 
-INSERT INTO Manager (EmployeeID) VALUES
+INSERT INTO Managers (EmployeeID) VALUES
 (6),
 (14),
 (25),
@@ -222,7 +222,7 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (10, 19, 65, '2023-02-12', NULL),
 (6, 35, 66, '2022-12-01', NULL);
 
-INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES
+INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
 (2, 25, '2022-12-02', NULL),
 (3, 26, '2022-12-03', NULL),

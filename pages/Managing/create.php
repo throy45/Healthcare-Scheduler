@@ -13,7 +13,7 @@ if (
     $StartDate = $_POST["StartDate"];
     $EndDate = $_POST["EndDate"];
 
-    $stmt = $conn->prepare("INSERT INTO Managers (FacilityID, EmployeeID, StartDate, EndDate) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("iiss", $FacilityID, $EmployeeID, $StartDate, $EndDate);
 
     if ($stmt->execute()){

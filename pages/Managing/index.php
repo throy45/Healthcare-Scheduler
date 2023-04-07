@@ -23,7 +23,7 @@
             <th>Action</th>
         </tr>
         <?php
-            $result = $conn->query("SELECT * FROM Managers");
+            $result = $conn->query("SELECT * FROM Managing");
             while ($row = $result->fetch_assoc()) {
         ?>
         <tr>

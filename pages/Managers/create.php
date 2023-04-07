@@ -7,7 +7,7 @@ if (
         
     $EmployeeID = $_POST["EmployeeID"];
 
-    $stmt = $conn->prepare("INSERT INTO Manager (EmployeeID) VALUES ($EmployeeID)");
+    $stmt = $conn->prepare("INSERT INTO Managers (EmployeeID) VALUES ($EmployeeID)");
 
 
     if ($stmt->execute()){
@@ -33,6 +33,6 @@ if (
         <br>
         <button type="submit">Add</button><br><br>
     </form>
-    <a href="./">Back to Manager list</a>
+    <a href="./">Back to Managers list</a>
 </body>
 </html> 
