@@ -1,6 +1,6 @@
-<?php require_once '../../database.php'; 
-    include '../header.php';
-  
+<?php 
+require_once '../../database.php'; 
+include '../header.php';
 
 if (
     isset($_POST["FacilityID"]) &&
@@ -16,13 +16,13 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-    $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
-
-    if ($stmt->execute()) {
+    try {
+        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
+        $stmt->execute();
         header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>
@@ -56,3 +56,4 @@ if (
 </body>
 
 </html>
+
