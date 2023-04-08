@@ -39,7 +39,7 @@
     <title>Query 13</title>
 </head>
 <body>
-    <h1>List of COVID infectons in the past 2 weeks, by facility</h1>
+    <h1>List of COVID-19 infectons in the past 2 weeks, by facility</h1>
     <table>
         <thead>
             <tr>
