@@ -47,7 +47,7 @@ $statement->bind_result($role, $totalHours);
     <title>Query 12</title>
 </head>
 <body>
-    <h1>Total Working Hours by Role</h1>
+    <h1>Total working hours by role</h1>
     <!-- Create the drop-down menu and input fields for period -->
     <form method="post">
         <label for="facility">Select a medical facility:</label>

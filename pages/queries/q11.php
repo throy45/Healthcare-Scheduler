@@ -36,7 +36,7 @@ $statement->bind_result($fName, $lName, $role);
     <title>Query 11</title>
 </head>
 <body>
-    <h1>List of Working Doctors in the last 2 weeks</h1>
+    <h1>List of working doctors in the last 2 weeks</h1>
 
     <!-- Create the drop-down menu -->
     <form method="post">

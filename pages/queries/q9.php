@@ -24,7 +24,7 @@
     <title>Query 9</title>
 </head>
 <body>
-    <h1>List of Doctor COVID-19 Infections in the last 2 weeks</h1>
+    <h1>List of doctor COVID-19 infections in the last 2 weeks</h1>
     <table>
         <thead>
             <tr>

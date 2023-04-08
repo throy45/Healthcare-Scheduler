@@ -74,11 +74,40 @@
                     <a href="./pages/queries/q12.php">Query 12</a>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <a href="./pages/PostalCodes/index.php">Postal Codes</a><br>
+                </td>
+                <td>
+                    <a href="./pages/queries/q13.php">Query 13</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="./pages/Schedule/index.php">Schedule</a><br>
+                </td>
+                <td>
+                    <a href="./pages/queries/q14.php">Query 14</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="./pages/Vaccines/index.php">Vaccines</a><br>
+                </td>
+                <td>
+                    <a href="./pages/queries/q15.php">Query 15</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="./pages/queries/q16.php">Query 16</a>
+                </td>
+                <td>
+                    <a href="./pages/queries/q17.php">Query 17</a>
+                </td>
+            </tr>
         </tbody>    
     
-    <a href="./pages/PostalCodes/index.php">Postal Codes</a><br>
-    <a href="./pages/Schedule/index.php">Schedule</a><br>
-    <a href="./pages/Vaccines/index.php">Vaccines</a><br>
     </table>
 </body>
 </html>

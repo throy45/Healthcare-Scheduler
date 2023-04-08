@@ -24,7 +24,7 @@
     <title>Query 6</title>
 </head>
 <body>
-    <h1>Query 6: List of Facilities</h1>
+    <h1>List of facilities</h1>
     <table>
         <thead>
             <tr>

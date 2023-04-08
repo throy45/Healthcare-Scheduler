@@ -40,7 +40,7 @@ mysqli_stmt_bind_result($statement, $row['Role'], $row['FirstName'], $row['LastN
     <title>Query 7</title>
 </head>
 <body>
-    <h1>List of Employees working at <?php echo $facilityName ?></h1>
+    <h1>List of employees working at <?php echo $facilityName ?></h1>
 
     <!-- Create the drop-down menu -->
     <form method="post">
