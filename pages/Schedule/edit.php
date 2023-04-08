@@ -1,6 +1,6 @@
-<?php require_once '../../database.php'; 
-    include '../header.php';
-  
+<?php
+require_once '../../database.php';
+include '../header.php';
 
 if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Date']) && isset($_GET['StartTime'])) {
     $FacilityID = $_GET['FacilityID'];
@@ -10,6 +10,7 @@ if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['Dat
     $result = $conn->query("SELECT * FROM Schedule WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND Date = '$Date' AND StartTime = '$StartTime'");
     $row = $result->fetch_assoc();
 }
+
 if (
     isset($_POST["FacilityID"]) && 
     isset($_POST["EmployeeID"]) && 
@@ -23,16 +24,40 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-    $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime'");
+    try {
+        $stmt = $conn->prepare("SELECT * FROM Schedule WHERE EmployeeId = $EmployeeID AND Date = '$Date' AND ((StartTime <= '$EndTime' AND EndTime > '$StartTime' - INTERVAL 1 HOUR) OR (StartTime >= '$StartTime' AND StartTime < '$EndTime' + INTERVAL 1 HOUR))");
+        $stmt->execute();
+        $conflicts = $stmt->fetchAll();
+        if (count($conflicts) > 1 || (count($conflicts) == 1 && $conflicts[0]["FacilityID"] != $FacilityID)) {
+            throw new PDOException("CheckScheduleConflict");
+        }
 
-    if ($stmt->execute()){
+        $empType = $conn->query("SELECT Type FROM Employees WHERE EmployeeID = $EmployeeID")->fetch_assoc()["Type"];
+        $infectedDate = $conn->query("SELECT MAX(Date) FROM Infections WHERE EmployeeID = $EmployeeID AND Type = 'COVID-19'")->fetch_assoc()["MAX(Date)"];
+        $dateDiff = strtotime($Date) - strtotime($infectedDate);
+        $daysSinceInfection = floor($dateDiff / (60 * 60 * 24));
+        if ($empType == "Nurse" || $empType == "Doctor") {
+            if ($infectedDate != NULL && $daysSinceInfection < 14) {
+                throw new PDOException("CheckScheduleConflict");
+            }
+        }
+        
+        $stmt = $conn->prepare("UPDATE Schedule SET EndTime='$EndTime' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date' AND StartTime='$StartTime'");
+        $stmt->execute();
+        
         header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+    } catch (PDOException $e) {
+        $error_message = $e->getMessage();
+        if (strpos($error_message, 'CheckScheduleConflict') !== false) {
+            echo "Error: Cannot schedule an infected nurse or doctor within two weeks of infection.";
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
         header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&Date=".$Date."&StartTime=".$StartTime);
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

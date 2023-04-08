@@ -28,10 +28,15 @@ if (
     $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address')");
 
 
-    if ($stmt->execute()){
+    if ($stmt->execute()) {
         header("Location: ./index.php");
     } else {
-        echo "Something went wrong. Please try again later.";
+        $error_message = $conn->errorInfo()[2];
+        if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
+            echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
 }
 ?>

@@ -1,6 +1,6 @@
-<?php require_once '../../database.php'; 
-    include '../header.php';
-  
+<?php 
+require_once '../../database.php'; 
+include '../header.php';
 
 if (
     isset($_POST["FacilityID"]) &&
@@ -16,14 +16,41 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-    $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
-
-    if ($stmt->execute()) {
+    try {
+        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) 
+                                SELECT ?,?,?,?,? 
+                                FROM dual
+                                WHERE NOT EXISTS (
+                                    SELECT * FROM Schedule
+                                    WHERE EmployeeID = ?
+                                    AND Date = ?
+                                    AND ((StartTime <= ? AND EndTime > ? - INTERVAL 1 HOUR)
+                                        OR (StartTime >= ? AND StartTime < ? + INTERVAL 1 HOUR))
+                                    OR StartTime > (NOW() + INTERVAL 4 WEEK)
+                                )");
+        $stmt->bind_param("iisssisssss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime, $EmployeeID, $Date, $StartTime, $StartTime, $StartTime, $EndTime);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            throw new Exception("Error: Schedule conflict or more than 4 weeks ahead.");
+        }
+        
+        $email_subject = "Schedule Assignment Cancellation";
+        $email_body = "Your schedule assignment has been cancelled due to a COVID-19 infection in your team. Please contact your supervisor for further instructions.";
+        $headers = "From: schedule@yourcompany.com";
+        
+        $stmt = $conn->prepare("SELECT Email FROM Employees WHERE EmployeeID = ? AND Type IN ('Nurse', 'Doctor')");
+        $stmt->bind_param("i", $EmployeeID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            mail($row["Email"], $email_subject, $email_body, $headers);
+        }
+        
         header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
+
 }
 ?>
 
@@ -56,3 +83,4 @@ if (
 </body>
 
 </html>
+
