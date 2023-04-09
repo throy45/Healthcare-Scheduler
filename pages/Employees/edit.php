@@ -1,49 +1,48 @@
 <?php require_once '../../database.php'; 
     include '../header.php';
   
+    if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
+        $EmployeeID = $_GET['EmployeeID'];
+        $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
+        $row = $result->fetch_assoc();
+    }
+    if (
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["FirstName"]) && 
+        isset($_POST["LastName"]) && 
+        isset($_POST["Role"]) && 
+        isset($_POST["DateOfBirth"]) && 
+        isset($_POST["MedicareNumber"]) && 
+        isset($_POST["Email"]) && 
+        isset($_POST["Citizenship"]) && 
+        isset($_POST["PhoneNumber"]) && 
+        isset($_POST["Address"])
+        ) {
+        $EmployeeID = $_POST["EmployeeID"];
+        $FirstName = $_POST["FirstName"];
+        $LastName = $_POST["LastName"];
+        $Role = $_POST["Role"];
+        $date_of_birth = $_POST["DateOfBirth"];
+        $medicare_number = $_POST["MedicareNumber"];
+        $email = $_POST["Email"];
+        $citizenship = $_POST["Citizenship"];
+        $phone_number = $_POST["PhoneNumber"];
+        $address = $_POST["Address"];
 
-if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
-    $EmployeeID = $_GET['EmployeeID'];
-    $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
-    $row = $result->fetch_assoc();
-}
-if (
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["FirstName"]) && 
-    isset($_POST["LastName"]) && 
-    isset($_POST["Role"]) && 
-    isset($_POST["DateOfBirth"]) && 
-    isset($_POST["MedicareNumber"]) && 
-    isset($_POST["Email"]) && 
-    isset($_POST["Citizenship"]) && 
-    isset($_POST["PhoneNumber"]) && 
-    isset($_POST["Address"])
-    ) {
-    $EmployeeID = $_POST["EmployeeID"];
-    $FirstName = $_POST["FirstName"];
-    $LastName = $_POST["LastName"];
-    $Role = $_POST["Role"];
-    $date_of_birth = $_POST["DateOfBirth"];
-    $medicare_number = $_POST["MedicareNumber"];
-    $email = $_POST["Email"];
-    $citizenship = $_POST["Citizenship"];
-    $phone_number = $_POST["PhoneNumber"];
-    $address = $_POST["Address"];
+        $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address' WHERE EmployeeID=$EmployeeID");
 
-    $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address' WHERE EmployeeID=$EmployeeID");
-
-    
-    if ($stmt->execute()) {
-        header("Location: ./index.php");
-    } else {
-        $error_message = $conn->errorInfo()[2];
-        if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
-            echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+        
+        if ($stmt->execute()) {
+            header("Location: ./index.php");
         } else {
-            echo "Something went wrong. Please try again later.";
+            $error_message = $conn->errorInfo()[2];
+            if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
+                echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+            } else {
+                echo "Something went wrong. Please try again later.";
+            }
         }
     }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -38,6 +38,7 @@
                     <td><?php echo $row['DoseNumber'] ?></td>
                     <td><?php echo $row['Date'] ?></td>
                     <td>
+                        <a href="./show.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&FacilityID=<?php echo $row["FacilityID"] ?>&VaccineID=<?php echo $row["VaccineID"] ?>">Show</a>
                         <a href="./edit.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&FacilityID=<?php echo $row["FacilityID"] ?>&VaccineID=<?php echo $row["VaccineID"] ?>">Edit</a>
                         <a href="./delete.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&FacilityID=<?php echo $row["FacilityID"] ?>&VaccineID=<?php echo $row["VaccineID"] ?>">Delete</a>
                     </td>

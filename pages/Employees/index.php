@@ -48,6 +48,7 @@
                     <td><?php echo $row['Address'] ?></td>
                     <td><?php echo $row['PostalCode'] ?></td>
                     <td>
+                        <a href="./show.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Show</a>
                         <a href="./edit.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Edit</a>
                         <a href="./delete.php?EmployeeID=<?php echo $row["EmployeeID"] ?>">Delete</a>
                     </td>

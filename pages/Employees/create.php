@@ -1,44 +1,44 @@
 <?php require_once '../../database.php'; 
     include '../header.php';
   
-if (
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["FirstName"]) && 
-    isset($_POST["LastName"]) && 
-    isset($_POST["Role"]) && 
-    isset($_POST["DateOfBirth"]) && 
-    isset($_POST["MedicareNumber"]) && 
-    isset($_POST["Email"]) && 
-    isset($_POST["Citizenship"]) && 
-    isset($_POST["PhoneNumber"]) && 
-    isset($_POST["Address"])
-    ) {
-        
-    $EmployeeID = $_POST["EmployeeID"];
-    $FirstName = $_POST["FirstName"];
-    $LastName = $_POST["LastName"];
-    $Role = $_POST["Role"];
-    $date_of_birth = $_POST["DateOfBirth"];
-    $medicare_number = $_POST["MedicareNumber"];
-    $email = $_POST["Email"];
-    $citizenship = $_POST["Citizenship"];
-    $phone_number = $_POST["PhoneNumber"];
-    $address = $_POST["Address"];
+    if (
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["FirstName"]) && 
+        isset($_POST["LastName"]) && 
+        isset($_POST["Role"]) && 
+        isset($_POST["DateOfBirth"]) && 
+        isset($_POST["MedicareNumber"]) && 
+        isset($_POST["Email"]) && 
+        isset($_POST["Citizenship"]) && 
+        isset($_POST["PhoneNumber"]) && 
+        isset($_POST["Address"])
+        ) {
+            
+        $EmployeeID = $_POST["EmployeeID"];
+        $FirstName = $_POST["FirstName"];
+        $LastName = $_POST["LastName"];
+        $Role = $_POST["Role"];
+        $date_of_birth = $_POST["DateOfBirth"];
+        $medicare_number = $_POST["MedicareNumber"];
+        $email = $_POST["Email"];
+        $citizenship = $_POST["Citizenship"];
+        $phone_number = $_POST["PhoneNumber"];
+        $address = $_POST["Address"];
 
-    $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address')");
+        $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address')");
 
 
-    if ($stmt->execute()) {
-        header("Location: ./index.php");
-    } else {
-        $error_message = $conn->errorInfo()[2];
-        if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
-            echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+        if ($stmt->execute()) {
+            header("Location: ./index.php");
         } else {
-            echo "Something went wrong. Please try again later.";
+            $error_message = $conn->errorInfo()[2];
+            if (strpos($error_message, 'Cannot assign this employee to the facility') !== false) {
+                echo "Cannot assign this employee to the facility. The facility has reached its maximum capacity.";
+            } else {
+                echo "Something went wrong. Please try again later.";
+            }
         }
     }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

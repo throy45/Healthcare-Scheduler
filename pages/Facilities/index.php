@@ -42,6 +42,7 @@
                     <td><?php echo $row['Address'] ?></td>
                     <td><?php echo $row['PostalCode'] ?></td>
                     <td>
+                        <a href="./show.php?FacilityID=<?php echo $row["FacilityID"]?>">Show</a>
                         <a href="./edit.php?FacilityID=<?php echo $row["FacilityID"] ?>">Edit</a>
                         <a href="./delete.php?FacilityID=<?php echo $row["FacilityID"] ?>">Delete</a>
                     </td>
