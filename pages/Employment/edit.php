@@ -11,15 +11,21 @@
         $StartDate = $_POST["StartDate"];
         $EndDate = isset($_POST["EndDate"]) ? $_POST["EndDate"] : null;
 
-        $stmt = $conn->prepare("UPDATE Employment SET StartDate=?, EndDate=? WHERE FacilityID=? AND EmployeeID=? AND ContractID=?");
-
-        $stmt->bind_param("ssiii", $StartDate, $EndDate, $FacilityID, $EmployeeID, $ContractID);
-        
-        if ($stmt->execute()){
-            header("Location: ./index.php");
+        $result = $conn->query("SELECT COUNT(*) AS count FROM Employment WHERE FacilityID = $FacilityID");
+        $count = $result->fetch_assoc()['count'];
+        $facility = $conn->query("SELECT Capacity FROM Facilities WHERE FacilityID = $FacilityID");
+        $capacity = $facility->fetch_assoc()['Capacity'];
+        if ($count >= $capacity) {
+            echo '<script>alert("Cannot add an employee to a facility which is at maximum capacity.");</script>';
         } else {
-            echo "Something went wrong. Please try again later.";
-            header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&ContractID=".$ContractID);
+            $stmt = $conn->prepare("UPDATE Employment SET StartDate=?, EndDate=? WHERE FacilityID=? AND EmployeeID=? AND ContractID=?");
+            $stmt->bind_param("ssiii", $StartDate, $EndDate, $FacilityID, $EmployeeID, $ContractID);
+            if ($stmt->execute()){
+                header("Location: ./index.php");
+            } else {
+                echo "Something went wrong. Please try again later.";
+                header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&ContractID=".$ContractID);
+            }
         }
     } else if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['ContractID']) && !empty($_GET['ContractID'])) {
         $FacilityID = $_GET['FacilityID'];
