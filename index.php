@@ -100,7 +100,13 @@
             </tr>
             <tr>
                 <td>
+                </td>
+                <td>
                     <a href="./pages/queries/q16.php">Query 16</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
                 </td>
                 <td>
                     <a href="./pages/queries/q17.php">Query 17</a>
