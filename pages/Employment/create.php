@@ -1,30 +1,29 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["ContractID"]) && 
-    isset($_POST["StartDate"]) && 
-    isset($_POST["EndDate"])
-    ) {
-        
-    $FacilityID = $_POST["FacilityID"];
-    $EmployeeID = $_POST["EmployeeID"];
-    $ContractID = $_POST["ContractID"];
-    $StartDate = $_POST["StartDate"];
-    $EndDate = $_POST["EndDate"];
+    if (
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["ContractID"]) && 
+        isset($_POST["StartDate"]) && 
+        isset($_POST["EndDate"])
+        ) {
+            
+        $FacilityID = $_POST["FacilityID"];
+        $EmployeeID = $_POST["EmployeeID"];
+        $ContractID = $_POST["ContractID"];
+        $StartDate = $_POST["StartDate"];
+        $EndDate = $_POST["EndDate"];
 
-    $stmt = $conn->prepare("INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES (?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("iiiss", $FacilityID, $EmployeeID, $ContractID, $StartDate, $EndDate);
+        $stmt->bind_param("iiiss", $FacilityID, $EmployeeID, $ContractID, $StartDate, $EndDate);
 
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
-}
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

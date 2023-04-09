@@ -1,34 +1,32 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-
-if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['StartDate']) && !empty($_GET['FacilityID']) && !empty($_GET['EmployeeID']) && !empty($_GET['StartDate'])) {
-    $FacilityID = $_GET['FacilityID'];
-    $EmployeeID = $_GET['EmployeeID'];
-    $StartDate = $_GET['StartDate'];
-    $result = $conn->query("SELECT * FROM Managing WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND StartDate = '$StartDate'");
-    $row = $result->fetch_assoc();
-}
-if (
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["StartDate"]) && 
-    isset($_POST["EndDate"])
-) {
-    $FacilityID = $_POST["FacilityID"];
-    $EmployeeID = $_POST["EmployeeID"];
-    $StartDate = $_POST["StartDate"];
-    $EndDate = $_POST["EndDate"];
-
-    $stmt = $conn->prepare("UPDATE Managing SET EndDate='$EndDate' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND StartDate='$StartDate'");
-
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
-        header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&StartDate=".$StartDate);
+    if (isset($_GET['FacilityID']) && isset($_GET['EmployeeID']) && isset($_GET['StartDate']) && !empty($_GET['FacilityID']) && !empty($_GET['EmployeeID']) && !empty($_GET['StartDate'])) {
+        $FacilityID = $_GET['FacilityID'];
+        $EmployeeID = $_GET['EmployeeID'];
+        $StartDate = $_GET['StartDate'];
+        $result = $conn->query("SELECT * FROM Managing WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND StartDate = '$StartDate'");
+        $row = $result->fetch_assoc();
     }
-}
+    if (
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["StartDate"]) && 
+        isset($_POST["EndDate"])
+    ) {
+        $FacilityID = $_POST["FacilityID"];
+        $EmployeeID = $_POST["EmployeeID"];
+        $StartDate = $_POST["StartDate"];
+        $EndDate = $_POST["EndDate"];
+
+        $stmt = $conn->prepare("UPDATE Managing SET EndDate='$EndDate' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND StartDate='$StartDate'");
+
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+            header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&StartDate=".$StartDate);
+        }
+    }
+    include '../header.php';
 ?>
 
 <!DOCTYPE html>

@@ -1,41 +1,33 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (
-  isset($_POST["FacilityID"]) && 
-  isset($_POST["Name"]) && 
-  isset($_POST["Type"]) && 
-  isset($_POST["Capacity"]) && 
-  isset($_POST["WebAddress"]) && 
-  isset($_POST["PhoneNumber"]) && 
-  isset($_POST["Address"]) && 
-  isset($_POST["PostalCode"])
-) {
-  $FacilityID = $_POST["FacilityID"];
-  $Name = $_POST["Name"];
-  $Type = $_POST["Type"];
-  $Capacity = $_POST["Capacity"];
-  $WebAddress = $_POST["WebAddress"];
-  $PhoneNumber = $_POST["PhoneNumber"];
-  $Address = $_POST["Address"];
-  $PostalCode = $_POST["PostalCode"];
+  if (
+    isset($_POST["FacilityID"]) && 
+    isset($_POST["Name"]) && 
+    isset($_POST["Type"]) && 
+    isset($_POST["Capacity"]) && 
+    isset($_POST["WebAddress"]) && 
+    isset($_POST["PhoneNumber"]) && 
+    isset($_POST["Address"]) && 
+    isset($_POST["PostalCode"])
+  ) {
+    $FacilityID = $_POST["FacilityID"];
+    $Name = $_POST["Name"];
+    $Type = $_POST["Type"];
+    $Capacity = $_POST["Capacity"];
+    $WebAddress = $_POST["WebAddress"];
+    $PhoneNumber = $_POST["PhoneNumber"];
+    $Address = $_POST["Address"];
+    $PostalCode = $_POST["PostalCode"];
 
-  $stmt = $conn->prepare("INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address, PostalCode) VALUES (:FacilityID, :Name, :Type, :Capacity, :WebAddress, :PhoneNumber, :Address, :PostalCode)");
-  $stmt->bindParam(":FacilityID", $FacilityID);
-  $stmt->bindParam(":Name", $Name);
-  $stmt->bindParam(":Type", $Type);
-  $stmt->bindParam(":Capacity", $Capacity);
-  $stmt->bindParam(":WebAddress", $WebAddress);
-  $stmt->bindParam(":PhoneNumber", $PhoneNumber);
-  $stmt->bindParam(":Address", $Address);
-  $stmt->bindParam(":PostalCode", $PostalCode);
-
-  if ($stmt->execute()) {
-    header("Location: ./index.php");
-  } else {
-    echo "Something went wrong. Please try again later.";
+    $stmt = $conn->prepare("INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address, PostalCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ississss", $FacilityID, $Name, $Type, $Capacity, $WebAddress, $PhoneNumber, $Address, $PostalCode);
+    try {
+      $stmt->execute();
+      header("Location: ./index.php");
+    } catch (Exception $e) {
+      echo "Error: " . $e->getMessage();
+    }
   }
-}
+  include '../header.php';
 ?>
 
 <!DOCTYPE html>

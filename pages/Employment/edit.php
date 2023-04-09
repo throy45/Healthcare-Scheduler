@@ -1,36 +1,34 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
+    if (
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["ContractID"]) && 
+        isset($_POST["StartDate"])
+        ) {
+        $FacilityID = $_POST["FacilityID"];
+        $EmployeeID = $_POST["EmployeeID"];
+        $ContractID = $_POST["ContractID"];
+        $StartDate = $_POST["StartDate"];
+        $EndDate = isset($_POST["EndDate"]) ? $_POST["EndDate"] : null;
 
-if (
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["ContractID"]) && 
-    isset($_POST["StartDate"])
-    ) {
-    $FacilityID = $_POST["FacilityID"];
-    $EmployeeID = $_POST["EmployeeID"];
-    $ContractID = $_POST["ContractID"];
-    $StartDate = $_POST["StartDate"];
-    $EndDate = isset($_POST["EndDate"]) ? $_POST["EndDate"] : null;
+        $stmt = $conn->prepare("UPDATE Employment SET StartDate=?, EndDate=? WHERE FacilityID=? AND EmployeeID=? AND ContractID=?");
 
-    $stmt = $conn->prepare("UPDATE Employment SET StartDate=?, EndDate=? WHERE FacilityID=? AND EmployeeID=? AND ContractID=?");
-
-    $stmt->bind_param("ssiii", $StartDate, $EndDate, $FacilityID, $EmployeeID, $ContractID);
-    
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
-        header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&ContractID=".$ContractID);
+        $stmt->bind_param("ssiii", $StartDate, $EndDate, $FacilityID, $EmployeeID, $ContractID);
+        
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+            header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&ContractID=".$ContractID);
+        }
+    } else if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['ContractID']) && !empty($_GET['ContractID'])) {
+        $FacilityID = $_GET['FacilityID'];
+        $EmployeeID = $_GET['EmployeeID'];
+        $ContractID = $_GET['ContractID'];
+        $result = $conn->query("SELECT * FROM Employment WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND ContractID = $ContractID");
+        $row = $result->fetch_assoc();
     }
-} else if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['ContractID']) && !empty($_GET['ContractID'])) {
-    $FacilityID = $_GET['FacilityID'];
-    $EmployeeID = $_GET['EmployeeID'];
-    $ContractID = $_GET['ContractID'];
-    $result = $conn->query("SELECT * FROM Employment WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND ContractID = $ContractID");
-    $row = $result->fetch_assoc();
-}
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

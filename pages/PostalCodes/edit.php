@@ -1,29 +1,28 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (isset($_GET['PostalCode']) && !empty($_GET['PostalCode'])) {
-    $PostalCode = urldecode($_GET['PostalCode']);
-    $result = $conn->query("SELECT * FROM PostalCodes WHERE PostalCode = '$PostalCode'");
-    $row = $result->fetch_assoc();
-}
-if (
-    isset($_POST["PostalCode"]) && 
-    isset($_POST["City"]) && 
-    isset($_POST["Province"])
-    ) {
-        
-    $PostalCode = $_POST["PostalCode"];
-    $City = $_POST["City"];
-    $Province = $_POST["Province"];
-
-    $stmt = $conn->prepare("UPDATE PostalCodes SET City='$City', Province='$Province' WHERE PostalCode='$PostalCode'");
-
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+    if (isset($_GET['PostalCode']) && !empty($_GET['PostalCode'])) {
+        $PostalCode = urldecode($_GET['PostalCode']);
+        $result = $conn->query("SELECT * FROM PostalCodes WHERE PostalCode = '$PostalCode'");
+        $row = $result->fetch_assoc();
     }
-}
+    if (
+        isset($_POST["PostalCode"]) && 
+        isset($_POST["City"]) && 
+        isset($_POST["Province"])
+        ) {
+            
+        $PostalCode = $_POST["PostalCode"];
+        $City = $_POST["City"];
+        $Province = $_POST["Province"];
+
+        $stmt = $conn->prepare("UPDATE PostalCodes SET City='$City', Province='$Province' WHERE PostalCode='$PostalCode'");
+
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
+    }
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

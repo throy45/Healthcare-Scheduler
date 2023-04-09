@@ -1,31 +1,29 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
+    if (
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["VaccineID"]) && 
+        isset($_POST["Type"]) && 
+        isset($_POST["DoseNumber"]) && 
+        isset($_POST["Date"])
+        ) {
+            
+        $EmployeeID = $_POST["EmployeeID"];
+        $FacilityID = $_POST["FacilityID"];
+        $VaccineID = $_POST["VaccineID"];
+        $Type = $_POST["Type"];
+        $DoseNumber = $_POST["DoseNumber"];
+        $Date = $_POST["Date"];
 
-if (
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["VaccineID"]) && 
-    isset($_POST["Type"]) && 
-    isset($_POST["DoseNumber"]) && 
-    isset($_POST["Date"])
-    ) {
-        
-    $EmployeeID = $_POST["EmployeeID"];
-    $FacilityID = $_POST["FacilityID"];
-    $VaccineID = $_POST["VaccineID"];
-    $Type = $_POST["Type"];
-    $DoseNumber = $_POST["DoseNumber"];
-    $Date = $_POST["Date"];
+        $stmt = $conn->prepare("INSERT INTO Vaccines (EmployeeID, FacilityID, VaccineID, Type, DoseNumber, Date) VALUES ($EmployeeID, $FacilityID, $VaccineID, '$Type', $DoseNumber, '$Date')");
 
-    $stmt = $conn->prepare("INSERT INTO Vaccines (EmployeeID, FacilityID, VaccineID, Type, DoseNumber, Date) VALUES ($EmployeeID, $FacilityID, $VaccineID, '$Type', $DoseNumber, '$Date')");
-
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
-}
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

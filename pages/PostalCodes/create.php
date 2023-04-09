@@ -1,24 +1,23 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (
-    isset($_POST["PostalCode"]) && 
-    isset($_POST["City"]) && 
-    isset($_POST["Province"])
-    ) {
-        
-    $postal_code = $_POST["PostalCode"];
-    $city = $_POST["City"];
-    $province = $_POST["Province"];
+    if (
+        isset($_POST["PostalCode"]) && 
+        isset($_POST["City"]) && 
+        isset($_POST["Province"])
+        ) {
+            
+        $postal_code = $_POST["PostalCode"];
+        $city = $_POST["City"];
+        $province = $_POST["Province"];
 
-    $stmt = $conn->prepare("INSERT INTO PostalCodes (PostalCode, City, Province) VALUES ('$postal_code', '$city', '$province')");
+        $stmt = $conn->prepare("INSERT INTO PostalCodes (PostalCode, City, Province) VALUES ('$postal_code', '$city', '$province')");
 
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
-}
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
