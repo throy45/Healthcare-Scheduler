@@ -36,6 +36,7 @@
                     <td><?php echo $row['Type'] ?></td>
                     <td><?php echo $row['Date'] ?></td>
                     <td>
+                        <a href="./show.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&InfectionID=<?php echo $row["InfectionID"] ?>">Show</a>
                         <a href="./edit.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&InfectionID=<?php echo $row["InfectionID"] ?>">Edit</a>
                         <a href="./delete.php?EmployeeID=<?php echo $row["EmployeeID"] ?>&InfectionID=<?php echo $row["InfectionID"] ?>">Delete</a>
                     </td>
