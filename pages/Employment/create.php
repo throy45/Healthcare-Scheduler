@@ -23,7 +23,7 @@ if (
     $employmentCount = $row["COUNT(*)"];
     $stmt->close();
 
-    $stmt = $conn->prepare("SELECT Capacity FROM Facilities WHERE ID = ?");
+    $stmt = $conn->prepare("SELECT Capacity FROM Facilities WHERE FacilityID = ?");
     $stmt->bind_param("i", $FacilityID);
     $stmt->execute();
     $result = $stmt->get_result();
