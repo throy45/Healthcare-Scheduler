@@ -16,11 +16,11 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("INSERT INTO hfests.Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime)
+        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime)
                                 SELECT ?, ?, ?, ?, ?
                                 FROM DUAL
                                 WHERE NOT EXISTS (
-                                    SELECT * FROM hfests.Schedule
+                                    SELECT * FROM Schedule
                                     WHERE EmployeeID = ?
                                     AND Date = ?
                                     AND (

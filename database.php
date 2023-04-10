@@ -1,9 +1,16 @@
 <?php
-
+/*
 $servername = 'localhost:3306';
 $username = 'root';
 $password = '';
 $database = 'hfests';
+*/
+
+
+$servername = 'lcc5531.encs.concordia.ca';
+$username = 'lcc55314';
+$password = '34h60z46';
+$database = 'lcc55314';
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);

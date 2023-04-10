@@ -3,7 +3,7 @@
     
     if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
         $EmployeeID = $_GET['EmployeeID'];
-        $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
+        $result = $conn->query("SELECT * FROM Employees WHERE EmployeeID = $EmployeeID");
         $row = $result->fetch_assoc();
     }
 ?>

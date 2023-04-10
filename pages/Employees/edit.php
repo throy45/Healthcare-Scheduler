@@ -1,7 +1,7 @@
 <?php require_once '../../database.php'; 
     if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
         $EmployeeID = $_GET['EmployeeID'];
-        $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
+        $result = $conn->query("SELECT * FROM Employees WHERE EmployeeID = $EmployeeID");
         $row = $result->fetch_assoc();
     }
     if (
@@ -29,7 +29,7 @@
         $address = $_POST["Address"];
         $PostalCode = $_POST["PostalCode"];
 
-        $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address',PostalCode='$PostalCode' WHERE EmployeeID=$EmployeeID");
+        $stmt = $conn->prepare("UPDATE Employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address',PostalCode='$PostalCode' WHERE EmployeeID=$EmployeeID");
 
         
         if ($stmt->execute()) {
