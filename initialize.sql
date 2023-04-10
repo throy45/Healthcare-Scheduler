@@ -106,6 +106,23 @@ CREATE TABLE Schedule (
    CHECK (EndTime >= StartTime)
 );
 
+DELIMITER $$
+CREATE TRIGGER AddingEmployeeExceedCapacityFacility
+BEFORE INSERT ON Employment
+FOR EACH ROW
+BEGIN
+    DECLARE CapacityOfFacility INT;
+    DECLARE CurrentCount INT;
+    SET CapacityOfFacility  = (SELECT Capacity FROM Facilities WHERE FacilityID = NEW.FacilityID);
+    SET CurrentCount = (SELECT COUNT(EmployeeID) FROM Employment WHERE FacilityID = NEW.FacilityID);
+    
+    IF (CurrentCount >= CapacityOfFacility) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign this employee to the facility. The facility has reached its maximum capacity.';
+    END IF;
+END;$$
+DELIMITER ;
+
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
 ('H3G 1Z7', 'Montreal', 'Quebec'),
