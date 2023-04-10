@@ -14,7 +14,8 @@ CREATE TABLE Facilities (
   PhoneNumber VARCHAR(255),
   Address VARCHAR(255),
   PostalCode VARCHAR(255),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode),
+  CHECK (Type in ('Hospital', 'CLSC', 'Clinic', 'Pharmacy', 'Special installment'))
 );
 
 CREATE TABLE Employees (
@@ -29,7 +30,8 @@ CREATE TABLE Employees (
   PhoneNumber VARCHAR(255),
   Address VARCHAR(255),
   PostalCode VARCHAR(255),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode),
+  CHECK (Role IN ('Nurse', 'Doctor', 'Cashier', 'Pharmacist', 'Receptionist', 'Administrative personnel', 'Security personnel', 'Regular employee'))
 );
 
 CREATE TABLE Managers (
@@ -66,7 +68,8 @@ CREATE TABLE Employment (
   EndDate DATE,
   PRIMARY KEY (FacilityID, EmployeeID, ContractID),
   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+  CHECK (COALESCE(EndDate, '9999-12-31') > StartDate)
 );
 
 CREATE TABLE Managing (
@@ -76,7 +79,8 @@ CREATE TABLE Managing (
   EndDate DATE,
   PRIMARY KEY (FacilityID, EmployeeID, StartDate),
   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID)
+  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID),
+  CHECK (COALESCE(EndDate, '9999-12-31') > StartDate)
 );
 
 CREATE TABLE EmailLog (
@@ -98,7 +102,8 @@ CREATE TABLE Schedule (
    EndTime TIME,
    PRIMARY KEY (FacilityID, EmployeeID, Date, StartTime),
    FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+   CHECK (EndTime >= StartTime)
 );
 
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
