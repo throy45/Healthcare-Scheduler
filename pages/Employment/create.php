@@ -1,20 +1,40 @@
-<?php require_once '../../database.php'; 
-    if (
-        isset($_POST["FacilityID"]) && 
-        isset($_POST["EmployeeID"]) && 
-        isset($_POST["ContractID"]) && 
-        isset($_POST["StartDate"]) && 
-        isset($_POST["EndDate"])
-        ) {
-            
-        $FacilityID = $_POST["FacilityID"];
-        $EmployeeID = $_POST["EmployeeID"];
-        $ContractID = $_POST["ContractID"];
-        $StartDate = $_POST["StartDate"];
-        $EndDate = $_POST["EndDate"];
+<?php
+require_once '../../database.php'; 
 
+if (
+    isset($_POST["FacilityID"]) && 
+    isset($_POST["EmployeeID"]) && 
+    isset($_POST["ContractID"]) && 
+    isset($_POST["StartDate"]) && 
+    isset($_POST["EndDate"])
+) {
+
+    $FacilityID = $_POST["FacilityID"];
+    $EmployeeID = $_POST["EmployeeID"];
+    $ContractID = $_POST["ContractID"];
+    $StartDate = $_POST["StartDate"];
+    $EndDate = $_POST["EndDate"];
+
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM Employment WHERE FacilityID = ?");
+    $stmt->bind_param("i", $FacilityID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $employmentCount = $row["COUNT(*)"];
+    $stmt->close();
+
+    $stmt = $conn->prepare("SELECT Capacity FROM Facilities WHERE FacilityID = ?");
+    $stmt->bind_param("i", $FacilityID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $facilityCapacity = $row["Capacity"];
+    $stmt->close();
+
+    if ($employmentCount >= $facilityCapacity) {
+        echo "<script>alert('Cannot add an employee to a facility which is at maximum capacity.')</script>";
+    } else {
         $stmt = $conn->prepare("INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES (?, ?, ?, ?, ?)");
-
         $stmt->bind_param("iiiss", $FacilityID, $EmployeeID, $ContractID, $StartDate, $EndDate);
 
         if ($stmt->execute()){
@@ -23,8 +43,11 @@
             echo "Something went wrong. Please try again later.";
         }
     }
-    include '../header.php';
+}
+
+include '../header.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,3 +74,4 @@
     <a href="./">Back to Employment list</a>
 </body>
 </html>
+
