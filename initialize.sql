@@ -166,22 +166,6 @@ END;$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER ScheduleInfectedNurseDoctor
-BEFORE INSERT ON Schedule
-FOR EACH ROW
-BEGIN
-  DECLARE EmpType VARCHAR(255);
-  DECLARE InfectedDate DATE;
-  SET EmpType = (SELECT e.Role FROM Employees e WHERE EmployeeID = NEW.EmployeeID);
-  SET InfectedDate = (SELECT MAX(i.Date) FROM Infections i WHERE EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19');
-  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND NEW.Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY) THEN
-      SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
-  END IF;
-END;$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE TRIGGER CheckEmployeeVaccinationCovid 
 BEFORE INSERT ON Schedule
 FOR EACH ROW
@@ -579,7 +563,6 @@ INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (11, 33, '2022-12-11', NULL),
 (12, 34, '2022-12-12', NULL);
 
-
 INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (1, 1, '2023-03-06', '08:00', '12:00'),
 (2, 1, '2023-03-07', '08:00', '12:00'),
@@ -876,3 +859,19 @@ that you have worked with in the past two weeks have been infected with COVID-19
 that you have worked with in the past two weeks have been infected with COVID-19'),
 (10, 10, '2023-03-31', 'Warning', 'One of your colleagues
 that you have worked with in the past two weeks have been infected with COVID-19');
+
+DELIMITER $$
+CREATE TRIGGER ScheduleInfectedNurseDoctor
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE EmpType VARCHAR(255);
+  DECLARE InfectedDate DATE;
+  SET EmpType = (SELECT e.Role FROM Employees e WHERE EmployeeID = NEW.EmployeeID);
+  SET InfectedDate = (SELECT MAX(i.Date) FROM Infections i WHERE EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19');
+  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND DATE_ADD(InfectedDate, INTERVAL 14 DAY) > NEW.Date THEN
+      SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
+  END IF;
+END;$$
+DELIMITER ;
