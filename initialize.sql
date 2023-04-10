@@ -218,7 +218,7 @@ BEGIN
     IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL THEN
         -- Cancel all assignments for the infected employee for two weeks
         DELETE 
-        FROM Schedule s 
+        FROM Schedule 
         WHERE EmployeeID = NEW.EmployeeID AND 
               Date >= InfectedDate AND 
               Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY);
