@@ -110,7 +110,7 @@ DELIMITER $$
 CREATE EVENT SendWeeklySchedule
 ON SCHEDULE EVERY 1 WEEK
 -- STARTS CURRENT_DATE + INTERVAL 6 - WEEKDAY(CURRENT_DATE) DAY
-STARTS '2023-04-09 22:53:00'
+STARTS '2023-04-10 17:25:00'
 DO
 BEGIN
     DECLARE ScheduleDate DATE;
@@ -939,7 +939,7 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (13, 39, '2023-04-14', '08:00', '12:00'),
 (13, 20, '2023-04-12', '08:00', '12:00'),
 (13, 20, '2023-04-13', '08:00', '12:00'),
-(13, 20, '2023-04-14', '08:00', '12:00');
+(7, 17, '2023-04-14', '08:00', '12:00');
 
 INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES
 (2, 12, '2023-03-31', 'Warning', 'One of your colleagues

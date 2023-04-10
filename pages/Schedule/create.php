@@ -16,27 +16,10 @@ if (
     $EndTime = $_POST["EndTime"];
 
     try {
-        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime)
-                                SELECT ?, ?, ?, ?, ?
-                                FROM DUAL
-                                WHERE NOT EXISTS (
-                                    SELECT * FROM Schedule
-                                    WHERE EmployeeID = ?
-                                    AND Date = ?
-                                    AND (
-                                        (StartTime <= CONCAT(?, ' ', ?) AND EndTime > (CONCAT(?, ' ', ?) - INTERVAL 1 HOUR))
-                                        OR
-                                        (StartTime >= CONCAT(?, ' ', ?) AND StartTime < (CONCAT(?, ' ', ?) + INTERVAL 1 HOUR))
-                                    ))
-                                    AND (? < (NOW() + INTERVAL 4 WEEK)
-                                );");
-        $stmt->bind_param("iisssissssssssss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime, $EmployeeID, $Date, $Date, $StartTime, $Date, $StartTime, $Date, $StartTime, $Date, $EndTime, $Date);
-        $stmt->execute();
+        $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
 
-        if ($stmt->affected_rows == 0) {
-            throw new Exception("Schedule conflict or more than 4 weeks ahead.");
-        }
-        
+        $stmt->execute();
         header("Location: ./index.php");
     } catch (Exception $e) {
         echo "<script>alert('Error: " . $e->getMessage() . "')</script>";
