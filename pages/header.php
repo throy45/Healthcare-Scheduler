@@ -1,5 +1,5 @@
 <?php
-$path ='https://lcc5531.encs.concordia.ca/5531/';
+$path ='https://lcc5531.encs.concordia.ca/5531';
 ?>
 <!DOCTYPE html>
 <html>
