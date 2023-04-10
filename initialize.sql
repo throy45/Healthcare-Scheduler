@@ -123,6 +123,23 @@ BEGIN
 END;$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER CheckScheduleConflict 
+BEFORE INSERT ON Schedule 
+FOR EACH ROW 
+BEGIN 
+  IF EXISTS (SELECT * FROM Schedule 
+             WHERE EmployeeID = NEW.EmployeeID AND
+			 Date = NEW.Date AND
+			 ((StartTime <= NEW.StartTime AND EndTime >= NEW.StartTime) OR 
+                     		 (StartTime >= NEW.StartTime AND StartTime <= NEW.EndTime))) 
+  THEN 
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is scheduled at a conflicting time'; 
+  END IF; 
+END;$$
+DELIMITER ;
+
+
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
 ('H3G 1Z7', 'Montreal', 'Quebec'),
