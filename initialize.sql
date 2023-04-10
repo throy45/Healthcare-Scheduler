@@ -107,6 +107,103 @@ CREATE TABLE Schedule (
 );
 
 DELIMITER $$
+CREATE EVENT SendWeeklySchedule
+ON SCHEDULE EVERY 1 WEEK
+-- STARTS CURRENT_DATE + INTERVAL 6 - WEEKDAY(CURRENT_DATE) DAY
+STARTS '2023-04-09 22:53:00'
+DO
+BEGIN
+    DECLARE ScheduleDate DATE;
+    DECLARE StartTime TIME;
+    DECLARE EndTime TIME;
+    DECLARE EmployeeID_local INT;
+    DECLARE EmployeeFirstName VARCHAR(50);
+    DECLARE EmployeeLastName VARCHAR(50);
+    DECLARE EmployeeEmail VARCHAR(50);
+    DECLARE FacilityID_local INT;
+    DECLARE FacilityName VARCHAR(50);
+    DECLARE FacilityAddress VARCHAR(100);
+    DECLARE EmailSubject VARCHAR(100);
+    DECLARE EmailBody VARCHAR(1000);
+    DECLARE EmailDate DATE DEFAULT CURDATE();
+    DECLARE currentDate DATE;
+	DECLARE count INT DEFAULT 0;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur CURSOR FOR 
+    SELECT DISTINCT EmployeeID, FacilityID
+		FROM Schedule s
+		WHERE s.Date BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+		ORDER BY EmployeeID, FacilityID;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    
+	CREATE VIEW ScheduleView AS
+    SELECT s.Date, s.StartTime, s.EndTime, s.EmployeeID, e.FName, e.LName, e.Email, f.FacilityID, f.Name, f.Address
+        FROM Schedule s
+        JOIN Employees e ON s.EmployeeID = e.EmployeeID
+        JOIN Facilities f ON s.FacilityID = f.FacilityID
+        WHERE s.Date BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+        ORDER BY EmployeeID, FacilityID, Date;
+
+   -- Loop through schedule records
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO EmployeeID_local, FacilityID_local;
+        
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        SET FacilityName = (SELECT DISTINCT sv.Name FROM ScheduleView sv WHERE sv.FacilityID = FacilityID_local);
+        SET EmailSubject = CONCAT(FacilityName, ' Schedule from Monday ', DATE_ADD(CURDATE(), INTERVAL 1 DAY), ' to Sunday ', DATE_ADD(CURDATE(), INTERVAL 7 DAY));
+        
+        SET EmployeeFirstName = (SELECT DISTINCT sv.FName FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local);
+        SET EmployeeLastName = (SELECT DISTINCT sv.LName FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local);
+        SET FacilityAddress = (SELECT DISTINCT sv.Address FROM ScheduleView sv WHERE sv.FacilityID = FacilityID_local);
+        SET EmailBody = CONCAT('Dear ', EmployeeFirstName, ' ', EmployeeLastName, ',\n\n', 
+                               'Here is your schedule: \n\n', 
+                               'Facility: ', FacilityName, '\n', 
+                               'Address: ', FacilityAddress, '\n');
+
+		SET currentDate = DATE_ADD(CURDATE(), INTERVAL 1 DAY);		
+		WHILE currentDate != DATE_ADD(CURDATE(), INTERVAL 8 DAY) DO
+			
+			CREATE TEMPORARY TABLE daySchedule AS
+            SELECT sv.StartTime, sv.EndTime 
+				FROM ScheduleView sv 
+                WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate;
+
+            SET count = (SELECT COUNT(*) FROM daySchedule);
+            
+            IF count = 0 THEN
+				SET EmailBody = CONCAT(EmailBody, DAYNAME(currentDate), ' No Assignment.\n');
+			ELSE
+				SET StartTime = (SELECT sv.StartTime FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate);
+				SET EndTime = (SELECT sv.EndTime FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate);
+				SET EmailBody = CONCAT(EmailBody, DAYNAME(currentDate), ' From ', StartTime, ' To ', EndTime, '.\n');
+            END IF;
+            
+            DROP TABLE daySchedule;
+            SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+        END WHILE;
+        
+        SET EmailBody = CONCAT(EmailBody, 
+                               'Please let us know if you have any questions or concerns.\n\n', 
+                               'Best regards,\n', 
+                               'The HR team');
+        -- CALL SendEmail(EmployeeEmail, EmailSubject, EmailBody);
+        -- Insert email into the email log
+        INSERT INTO EmailLog 
+        VALUES (FacilityID_local, EmployeeID_local, EmailDate, EmailSubject, LEFT(EmailBody, 80));
+    END LOOP;
+    CLOSE cur; 
+    
+	DROP VIEW ScheduleView;
+END;$$
+DELIMITER ;
+
+
+DELIMITER $$
 CREATE TRIGGER AddingEmployeeExceedCapacityFacility
 BEFORE INSERT ON Employment
 FOR EACH ROW
@@ -823,7 +920,22 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (13, 20, '2023-03-03', '08:00', '12:00'),
 (13, 20, '2023-03-04', '08:00', '12:00'),
 (13, 20, '2023-03-05', '08:00', '12:00'),
-(13, 20, '2023-03-06', '08:00', '12:00');
+(13, 20, '2023-03-06', '08:00', '12:00'),
+(13, 36, '2023-04-12', '08:00', '12:00'),
+(13, 36, '2023-04-13', '08:00', '12:00'),
+(13, 36, '2023-04-14', '08:00', '12:00'),
+(13, 37, '2023-04-12', '08:00', '12:00'),
+(13, 37, '2023-04-13', '08:00', '12:00'),
+(13, 37, '2023-04-14', '08:00', '12:00'),
+(13, 38, '2023-04-12', '08:00', '12:00'),
+(13, 38, '2023-04-13', '08:00', '12:00'),
+(13, 38, '2023-04-14', '08:00', '12:00'),
+(13, 39, '2023-04-12', '08:00', '12:00'),
+(13, 39, '2023-04-13', '08:00', '12:00'),
+(13, 39, '2023-04-14', '08:00', '12:00'),
+(13, 20, '2023-04-12', '08:00', '12:00'),
+(13, 20, '2023-04-13', '08:00', '12:00'),
+(13, 20, '2023-04-14', '08:00', '12:00');
 
 INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES
 (2, 12, '2023-03-31', 'Warning', 'One of your colleagues
@@ -841,7 +953,32 @@ that you have worked with in the past two weeks have been infected with COVID-19
 (12, 34, '2023-03-31', 'Warning', 'One of your colleagues
 that you have worked with in the past two weeks have been infected with COVID-19'),
 (10, 10, '2023-03-31', 'Warning', 'One of your colleagues
-that you have worked with in the past two weeks have been infected with COVID-19');
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(13, 36, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Maelle Campagnie, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 37, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Clemence Fouquet, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 38, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Nadira Rafai, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 39, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Anais Perez, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 20, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Emily Thomas, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team');
 
 DELIMITER $$
 CREATE TRIGGER ScheduleInfectedNurseDoctor
