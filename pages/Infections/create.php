@@ -10,8 +10,8 @@
     $Type = $_POST["Type"];
     $Date = $_POST["Date"];
     
-
-    $stmt = $conn->prepare("INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ('$EmployeeID', '$InfectionID', '$Type', '$Date')");
+    echo "INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ($EmployeeID, $InfectionID, '$Type', '$Date')";
+    $stmt = $conn->prepare("INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ($EmployeeID, $InfectionID, '$Type', '$Date')");
 
     if ($stmt->execute()) {
       header("Location: ./index.php");
@@ -34,9 +34,9 @@
   <h1>Add Infection</h1>
   <form action="./create.php" method="post">
     <label for="EmployeeID">Employee ID</label><br>
-    <input type="number" name="InfectionID" id="InfectionID" required><br>
+    <input type="number" name="EmployeeID" id="EmployeeID" required><br>
     <label for="InfectionID">InfectionID</label><br>
-    <input type="text" name="InfectionID" id="InfectionID" required><br>
+    <input type="number" name="InfectionID" id="InfectionID" required><br>
     <label for="Type">Type</label><br>
         <select name="Type" id="Type" required>
           <option value="COVID-19">COVID-19</option>
@@ -45,7 +45,7 @@
           <option value="Other">Other</option>
         </select><br>
     <label for="Date">Date</label><br>
-    <input type="number" name="Date" id="Date" required><br>
+    <input type="date" name="Date" id="Date" required><br>
     <button type="submit">Add</button><br><br>
   </form>
   <a href="./index.php">Back to Infections list</a>

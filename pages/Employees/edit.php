@@ -14,7 +14,8 @@
         isset($_POST["Email"]) && 
         isset($_POST["Citizenship"]) && 
         isset($_POST["PhoneNumber"]) && 
-        isset($_POST["Address"])
+        isset($_POST["Address"]) && 
+        isset($_POST["PostalCode"])
         ) {
         $EmployeeID = $_POST["EmployeeID"];
         $FirstName = $_POST["FirstName"];
@@ -26,8 +27,9 @@
         $citizenship = $_POST["Citizenship"];
         $phone_number = $_POST["PhoneNumber"];
         $address = $_POST["Address"];
+        $PostalCode = $_POST["PostalCode"];
 
-        $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address' WHERE EmployeeID=$EmployeeID");
+        $stmt = $conn->prepare("UPDATE employees SET FName='$FirstName', LName='$LastName', Role='$Role', DoBirth='$date_of_birth', MedicareNumber='$medicare_number', Email='$email', Citizenship=' $citizenship', PhoneNumber='$phone_number', Address='$address',PostalCode='$PostalCode' WHERE EmployeeID=$EmployeeID");
 
         
         if ($stmt->execute()) {
@@ -82,7 +84,9 @@
         <label for="PhoneNumber">Phone Number</label><br>
         <input type="text" name="PhoneNumber" id="PhoneNumber" value="<?php echo $row["PhoneNumber"] ?>"><br>
         <label for="Address">Address</label><br>
-        <input type="text" name="Address" id="Address" value="<?php echo $row["Address"] ?>"><br><br>
+        <input type="text" name="Address" id="Address" value="<?php echo $row["Address"] ?>"><br>
+        <label for="PostalCode">Postal Code</label><br>
+        <input type="text" name="PostalCode" id="PostalCode" value="<?php echo $row["PostalCode"]?>"><br><br>
         <button type="submit">Update</button><br><br>
     </form>
     <a href="./">Back to Employee list</a>

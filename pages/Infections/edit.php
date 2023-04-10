@@ -15,7 +15,7 @@
     $Type = $_POST["Type"];
     $Date = $_POST["Date"];
 
-    $stmt = $conn->prepare("UPDATE Infections SET  InfectionID=$InfectionID, Type=$Type, Date=$Date WHERE EmployeeID=$EmployeeID");
+    $stmt = $conn->prepare("UPDATE Infections SET  InfectionID=$InfectionID, Type='$Type', Date='$Date' WHERE EmployeeID=$EmployeeID");
 
     if ($stmt->execute()) {
       header("Location: ./index.php");
