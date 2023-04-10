@@ -1,38 +1,37 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID'])) {
-    $FacilityID = $_GET['FacilityID'];
-    $result = $conn->query("SELECT * FROM Facilities WHERE FacilityID = $FacilityID");
-    $row = $result->fetch_assoc();
-}
-if (
-  isset($_POST["FacilityID"]) && 
-  isset($_POST["Name"]) && 
-  isset($_POST["Type"]) && 
-  isset($_POST["Capacity"]) && 
-  isset($_POST["WebAddress"]) && 
-  isset($_POST["PhoneNumber"]) && 
-  isset($_POST["Address"]) && 
-  isset($_POST["PostalCode"])
-) {
-  $FacilityID = $_POST["FacilityID"];
-  $Name = $_POST["Name"];
-  $Type = $_POST["Type"];
-  $Capacity = $_POST["Capacity"];
-  $WebAddress = $_POST["WebAddress"];
-  $PhoneNumber = $_POST["PhoneNumber"];
-  $Address = $_POST["Address"];
-  $PostalCode = $_POST["PostalCode"];
-
-  $stmt = $conn->prepare("UPDATE Facilities SET Name=$Name, Type=$Type, Capacity=$Capacity, WebAddress=$WebAddress, PhoneNumber=$PhoneNumber, Address=$Address, PostalCode=$PostalCode WHERE FacilityID=$FacilityID");
-
-  if ($stmt->execute()) {
-    header("Location: ./index.php");
-  } else {
-    echo "Something went wrong. Please try again later.";
+  if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID'])) {
+      $FacilityID = $_GET['FacilityID'];
+      $result = $conn->query("SELECT * FROM Facilities WHERE FacilityID = $FacilityID");
+      $row = $result->fetch_assoc();
   }
-}
+  if (
+    isset($_POST["FacilityID"]) && 
+    isset($_POST["Name"]) && 
+    isset($_POST["Type"]) && 
+    isset($_POST["Capacity"]) && 
+    isset($_POST["WebAddress"]) && 
+    isset($_POST["PhoneNumber"]) && 
+    isset($_POST["Address"]) && 
+    isset($_POST["PostalCode"])
+  ) {
+    $FacilityID = $_POST["FacilityID"];
+    $Name = $_POST["Name"];
+    $Type = $_POST["Type"];
+    $Capacity = $_POST["Capacity"];
+    $WebAddress = $_POST["WebAddress"];
+    $PhoneNumber = $_POST["PhoneNumber"];
+    $Address = $_POST["Address"];
+    $PostalCode = $_POST["PostalCode"];
+
+    $stmt = $conn->prepare("UPDATE Facilities SET Name=$Name, Type=$Type, Capacity=$Capacity, WebAddress=$WebAddress, PhoneNumber=$PhoneNumber, Address=$Address, PostalCode=$PostalCode WHERE FacilityID=$FacilityID");
+
+    if ($stmt->execute()) {
+      header("Location: ./index.php");
+    } else {
+      echo "Something went wrong. Please try again later.";
+    }
+  }
+  include '../header.php';
 ?>
 
 <!DOCTYPE html>

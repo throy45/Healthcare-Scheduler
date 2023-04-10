@@ -1,29 +1,28 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-    
-if (
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["Date"]) && 
-    isset($_POST["Subject"]) && 
-    isset($_POST["Body"])
-    ) {
-        
-    $FacilityID = $_POST["FacilityID"];
-    $EmployeeID = $_POST["EmployeeID"];
-    $Date = $_POST["Date"];
-    $Subject = $_POST["Subject"];
-    $Body = $_POST["Body"];
+    if (
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["Date"]) && 
+        isset($_POST["Subject"]) && 
+        isset($_POST["Body"])
+        ) {
+            
+        $FacilityID = $_POST["FacilityID"];
+        $EmployeeID = $_POST["EmployeeID"];
+        $Date = $_POST["Date"];
+        $Subject = $_POST["Subject"];
+        $Body = $_POST["Body"];
 
-    $stmt = $conn->prepare("INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES ($FacilityID, $EmployeeID, '$Date', '$Subject', '$Body')");
+        $stmt = $conn->prepare("INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES ($FacilityID, $EmployeeID, '$Date', '$Subject', '$Body')");
 
 
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
-}
+include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

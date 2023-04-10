@@ -1,30 +1,29 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['InfectionID']) && !empty($_GET['InfectionID'])) {
-  $EmployeeID = $_GET['EmployeeID'];
-  $InfectionID = $_GET['InfectionID'];
-  $result = $conn->query("SELECT * FROM Infections WHERE EmployeeID = $EmployeeID AND InfectionID = $InfectionID");
-  $row = $result->fetch_assoc();
-} else if (
-  isset($_POST["EmployeeID"]) && 
-  isset($_POST["InfectionID"]) && 
-  isset($_POST["Type"]) && 
-  isset($_POST["Date"]) 
-) {
-  $EmployeeID = $_POST["EmployeeID"];
-  $InfectionID = $_POST["InfectionID"];
-  $Type = $_POST["Type"];
-  $Date = $_POST["Date"];
+  if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['InfectionID']) && !empty($_GET['InfectionID'])) {
+    $EmployeeID = $_GET['EmployeeID'];
+    $InfectionID = $_GET['InfectionID'];
+    $result = $conn->query("SELECT * FROM Infections WHERE EmployeeID = $EmployeeID AND InfectionID = $InfectionID");
+    $row = $result->fetch_assoc();
+  } else if (
+    isset($_POST["EmployeeID"]) && 
+    isset($_POST["InfectionID"]) && 
+    isset($_POST["Type"]) && 
+    isset($_POST["Date"]) 
+  ) {
+    $EmployeeID = $_POST["EmployeeID"];
+    $InfectionID = $_POST["InfectionID"];
+    $Type = $_POST["Type"];
+    $Date = $_POST["Date"];
 
-  $stmt = $conn->prepare("UPDATE Infections SET  InfectionID=$InfectionID, Type=$Type, Date=$Date WHERE EmployeeID=$EmployeeID");
+    $stmt = $conn->prepare("UPDATE Infections SET  InfectionID=$InfectionID, Type=$Type, Date=$Date WHERE EmployeeID=$EmployeeID");
 
-  if ($stmt->execute()) {
-    header("Location: ./index.php");
-  } else {
-    echo "Something went wrong. Please try again later.";
+    if ($stmt->execute()) {
+      header("Location: ./index.php");
+    } else {
+      echo "Something went wrong. Please try again later.";
+    }
   }
-}
+  include '../header.php';
 ?>
 
 <!DOCTYPE html>

@@ -1,36 +1,35 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-
-if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['Date']) && !empty($_GET['Date'])) {
-    $FacilityID = $_GET['FacilityID'];
-    $EmployeeID = $_GET['EmployeeID'];
-    $Date = $_GET['Date'];
-    $result = $conn->query("SELECT * FROM EmailLog WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND Date = '$Date'");
-    $row = $result->fetch_assoc();
-}
-
-if (
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["Date"]) && 
-    isset($_POST["Subject"]) && 
-    isset($_POST["Body"])
-    ) {
-    $FacilityID = $_POST["FacilityID"];
-    $EmployeeID = $_POST["EmployeeID"];
-    $Date = $_POST["Date"];
-    $Subject = $_POST["Subject"];
-    $Body = $_POST["Body"];
-
-    $stmt = $conn->prepare("UPDATE EmailLog SET Subject='$Subject', Body='$Body' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date'");
-
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
-        header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&Date=".$Date);
+    if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID']) && isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID']) && isset($_GET['Date']) && !empty($_GET['Date'])) {
+        $FacilityID = $_GET['FacilityID'];
+        $EmployeeID = $_GET['EmployeeID'];
+        $Date = $_GET['Date'];
+        $result = $conn->query("SELECT * FROM EmailLog WHERE FacilityID = $FacilityID AND EmployeeID = $EmployeeID AND Date = '$Date'");
+        $row = $result->fetch_assoc();
     }
-}
+
+    if (
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["Date"]) && 
+        isset($_POST["Subject"]) && 
+        isset($_POST["Body"])
+        ) {
+        $FacilityID = $_POST["FacilityID"];
+        $EmployeeID = $_POST["EmployeeID"];
+        $Date = $_POST["Date"];
+        $Subject = $_POST["Subject"];
+        $Body = $_POST["Body"];
+
+        $stmt = $conn->prepare("UPDATE EmailLog SET Subject='$Subject', Body='$Body' WHERE FacilityID=$FacilityID AND EmployeeID=$EmployeeID AND Date='$Date'");
+
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+            header("Location: ./edit.php?FacilityID=".$FacilityID."&EmployeeID=".$EmployeeID."&Date=".$Date);
+        }
+    }
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

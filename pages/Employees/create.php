@@ -1,6 +1,4 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
     if (
         isset($_POST["EmployeeID"]) && 
         isset($_POST["FirstName"]) && 
@@ -39,6 +37,7 @@
             }
         }
     }
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,39 +1,37 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
-
-if (isset($_GET['EmployeeID']) && isset($_GET['FacilityID']) && isset($_GET['VaccineID'])) {
-    $EmployeeID = $_GET['EmployeeID'];
-    $FacilityID = $_GET['FacilityID'];
-    $VaccineID = $_GET['VaccineID'];
-    $result = $conn->query("SELECT * FROM Vaccines WHERE EmployeeID = $EmployeeID AND FacilityID = $FacilityID AND VaccineID = $VaccineID");
-    $row = $result->fetch_assoc();
-}
-
-if (
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["FacilityID"]) && 
-    isset($_POST["VaccineID"]) && 
-    isset($_POST["Type"]) && 
-    isset($_POST["DoseNumber"]) && 
-    isset($_POST["Date"])
-    ) {
-    $EmployeeID = $_POST["EmployeeID"];
-    $FacilityID = $_POST["FacilityID"];
-    $VaccineID = $_POST["VaccineID"];
-    $Type = $_POST["Type"];
-    $DoseNumber = $_POST["DoseNumber"];
-    $Date = $_POST["Date"];
-
-    $stmt = $conn->prepare("UPDATE Vaccines SET Type='$Type', DoseNumber='$DoseNumber', Date='$Date' WHERE EmployeeID=$EmployeeID AND FacilityID=$FacilityID AND VaccineID=$VaccineID");
-
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
-        header("Location: ./edit.php?EmployeeID=".$EmployeeID."&FacilityID=".$FacilityID."&VaccineID=".$VaccineID);
+    if (isset($_GET['EmployeeID']) && isset($_GET['FacilityID']) && isset($_GET['VaccineID'])) {
+        $EmployeeID = $_GET['EmployeeID'];
+        $FacilityID = $_GET['FacilityID'];
+        $VaccineID = $_GET['VaccineID'];
+        $result = $conn->query("SELECT * FROM Vaccines WHERE EmployeeID = $EmployeeID AND FacilityID = $FacilityID AND VaccineID = $VaccineID");
+        $row = $result->fetch_assoc();
     }
-}
+
+    if (
+        isset($_POST["EmployeeID"]) && 
+        isset($_POST["FacilityID"]) && 
+        isset($_POST["VaccineID"]) && 
+        isset($_POST["Type"]) && 
+        isset($_POST["DoseNumber"]) && 
+        isset($_POST["Date"])
+        ) {
+        $EmployeeID = $_POST["EmployeeID"];
+        $FacilityID = $_POST["FacilityID"];
+        $VaccineID = $_POST["VaccineID"];
+        $Type = $_POST["Type"];
+        $DoseNumber = $_POST["DoseNumber"];
+        $Date = $_POST["Date"];
+
+        $stmt = $conn->prepare("UPDATE Vaccines SET Type='$Type', DoseNumber='$DoseNumber', Date='$Date' WHERE EmployeeID=$EmployeeID AND FacilityID=$FacilityID AND VaccineID=$VaccineID");
+
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+            header("Location: ./edit.php?EmployeeID=".$EmployeeID."&FacilityID=".$FacilityID."&VaccineID=".$VaccineID);
+        }
+    }
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

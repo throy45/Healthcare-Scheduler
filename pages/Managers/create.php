@@ -1,21 +1,20 @@
-<?php require_once '../../database.php'; 
-    include '../header.php';
-  
-if (
-    isset($_POST["EmployeeID"]) 
-    ) {
-        
-    $EmployeeID = $_POST["EmployeeID"];
+<?php require_once '../../database.php';  
+    if (
+        isset($_POST["EmployeeID"]) 
+        ) {
+            
+        $EmployeeID = $_POST["EmployeeID"];
 
-    $stmt = $conn->prepare("INSERT INTO Managers (EmployeeID) VALUES ($EmployeeID)");
+        $stmt = $conn->prepare("INSERT INTO Managers (EmployeeID) VALUES ($EmployeeID)");
 
 
-    if ($stmt->execute()){
-        header("Location: ./index.php");
-    } else {
-        echo "Something went wrong. Please try again later.";
+        if ($stmt->execute()){
+            header("Location: ./index.php");
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
     }
-}
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

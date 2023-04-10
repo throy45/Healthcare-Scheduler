@@ -23,7 +23,7 @@ if (isset($_GET['FacilityID']) && !empty($_GET['FacilityID'])) {
     <p>Web Address: <?php echo $row["WebAddress"];?></p>
     <p>Phone Number: <?php echo $row["PhoneNumber"];?></p>
     <p>Address: <?php echo $row["Address"];?></p>
-    <p>Postal code:<?php echo $row["PostalCode"];?></p>
+    <p>Postal code: <?php echo $row["PostalCode"];?></p>
     <a href="./index.php">Back</a>
 </body>
 </html>

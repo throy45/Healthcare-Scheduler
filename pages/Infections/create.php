@@ -1,27 +1,25 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
+  if (
+      isset($_POST["EmployeeID"]) && 
+      isset($_POST["InfectionID"]) && 
+      isset($_POST["Type"]) && 
+      isset($_POST["Date"]) 
+  ) {
+    $EmployeeID = $_POST["EmployeeID"];
+    $InfectionID = $_POST["InfectionID"];
+    $Type = $_POST["Type"];
+    $Date = $_POST["Date"];
+    
 
-if (
-    isset($_POST["EmployeeID"]) && 
-    isset($_POST["InfectionID"]) && 
-    isset($_POST["Type"]) && 
-    isset($_POST["Date"]) 
-) {
-  $EmployeeID = $_POST["EmployeeID"];
-  $InfectionID = $_POST["InfectionID"];
-  $Type = $_POST["Type"];
-  $Date = $_POST["Date"];
-  
+    $stmt = $conn->prepare("INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ('$EmployeeID', '$InfectionID', '$Type', '$Date')");
 
-  $stmt = $conn->prepare("INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ('$EmployeeID', '$InfectionID', '$Type', '$Date')");
-
-  if ($stmt->execute()) {
-    header("Location: ./index.php");
-  } else {
-    echo "Something went wrong. Please try again later.";
+    if ($stmt->execute()) {
+      header("Location: ./index.php");
+    } else {
+      echo "Something went wrong. Please try again later.";
+    }
   }
-}
+  include '../header.php';
 ?>
 
 <!DOCTYPE html>

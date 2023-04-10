@@ -1,6 +1,4 @@
 <?php require_once '../../database.php'; 
-    include '../header.php';
-  
     if (isset($_GET['EmployeeID']) && !empty($_GET['EmployeeID'])) {
         $EmployeeID = $_GET['EmployeeID'];
         $result = $conn->query("SELECT * FROM employees WHERE EmployeeID = $EmployeeID");
@@ -43,6 +41,7 @@
             }
         }
     }
+    include '../header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

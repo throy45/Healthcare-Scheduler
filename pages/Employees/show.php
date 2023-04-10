@@ -26,7 +26,7 @@
     <p>Citizenship: <?php echo $row["Citizenship"];?></p>
     <p>Phone number: <?php echo $row["PhoneNumber"];?></p>
     <p>Address: <?php echo $row["Address"];?></p>
-    <p>Postal code:<?php echo $row["PostalCode"];?></p>
+    <p>Postal code: <?php echo $row["PostalCode"];?></p>
     <a href="./index.php">Back</a>
 </body>
 </html>

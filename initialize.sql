@@ -14,7 +14,8 @@ CREATE TABLE Facilities (
   PhoneNumber VARCHAR(255),
   Address VARCHAR(255),
   PostalCode VARCHAR(255),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode),
+  CHECK (Type in ('Hospital', 'CLSC', 'Clinic', 'Pharmacy', 'Special instalment'))
 );
 
 CREATE TABLE Employees (
@@ -29,7 +30,8 @@ CREATE TABLE Employees (
   PhoneNumber VARCHAR(255),
   Address VARCHAR(255),
   PostalCode VARCHAR(255),
-  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode)
+  FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode),
+  CHECK (Role IN ('Nurse', 'Doctor', 'Cashier', 'Pharmacist', 'Receptionist', 'Administrative personnel', 'Security personnel', 'Regular employee'))
 );
 
 CREATE TABLE Managers (
@@ -66,7 +68,8 @@ CREATE TABLE Employment (
   EndDate DATE,
   PRIMARY KEY (FacilityID, EmployeeID, ContractID),
   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+  FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+  CHECK (COALESCE(EndDate, '9999-12-31') > StartDate)
 );
 
 CREATE TABLE Managing (
@@ -76,7 +79,8 @@ CREATE TABLE Managing (
   EndDate DATE,
   PRIMARY KEY (FacilityID, EmployeeID, StartDate),
   FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID)
+  FOREIGN KEY (EmployeeID) REFERENCES Managers(EmployeeID),
+  CHECK (COALESCE(EndDate, '9999-12-31') > StartDate)
 );
 
 CREATE TABLE EmailLog (
@@ -98,8 +102,128 @@ CREATE TABLE Schedule (
    EndTime TIME,
    PRIMARY KEY (FacilityID, EmployeeID, Date, StartTime),
    FOREIGN KEY (FacilityID) REFERENCES Facilities(FacilityID),
-   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+   FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+   CHECK (EndTime >= StartTime)
 );
+
+DELIMITER $$
+CREATE TRIGGER AddingEmployeeExceedCapacityFacility
+BEFORE INSERT ON Employment
+FOR EACH ROW
+BEGIN
+    DECLARE CapacityOfFacility INT;
+    DECLARE CurrentCount INT;
+    SET CapacityOfFacility  = (SELECT Capacity FROM Facilities WHERE FacilityID = NEW.FacilityID);
+    SET CurrentCount = (SELECT COUNT(EmployeeID) FROM Employment WHERE FacilityID = NEW.FacilityID);
+    
+    IF (CurrentCount >= CapacityOfFacility) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign this employee to the facility. The facility has reached its maximum capacity.';
+    END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CheckScheduleConflict 
+BEFORE INSERT ON Schedule 
+FOR EACH ROW 
+BEGIN 
+  IF EXISTS (SELECT * FROM Schedule 
+             WHERE EmployeeID = NEW.EmployeeID AND
+			 Date = NEW.Date AND
+			 ((StartTime <= NEW.StartTime AND EndTime >= NEW.StartTime) OR 
+                     		 (StartTime >= NEW.StartTime AND StartTime <= NEW.EndTime))) 
+  THEN 
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is scheduled at a conflicting time'; 
+  END IF; 
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CheckTimeIntervalSchedule BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  IF EXISTS (SELECT * FROM Schedule
+             WHERE EmployeeId = NEW.EmployeeId
+             AND Date = NEW.Date
+             AND ((StartTime <= NEW.StartTime AND EndTime > NEW.StartTime - INTERVAL 1 HOUR)
+                  OR (StartTime >= New.StartTime AND StartTime < NEW.EndTime + INTERVAL 1 HOUR))) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is scheduled with less than 1 hour interval';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER FourWeekSchedule
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  IF NEW.Date > (NOW() + INTERVAL 4 WEEK) THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Cannot schedule more than four weeks ahead of time.';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CancelAssignments
+AFTER INSERT ON Infections
+FOR EACH ROW
+BEGIN
+    DECLARE EmpType VARCHAR(255);
+    DECLARE InfectedDate DATE;
+    -- Get employee type and latest infected date from the newly inserted row
+    SET EmpType = (SELECT e.Role FROM Employees e WHERE e.EmployeeID = NEW.EmployeeID);
+    SET InfectedDate = (
+        SELECT MAX(i.Date) 
+        FROM Infections i 
+        WHERE i.EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19'
+    );
+    -- Check if the infected employee is a doctor or a nurse
+    IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL THEN
+        -- Cancel all assignments for the infected employee for two weeks
+        DELETE 
+        FROM Schedule 
+        WHERE EmployeeID = NEW.EmployeeID AND 
+              Date >= InfectedDate AND 
+              Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY);
+    END IF;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER EmailWarningInfectedEmployee
+AFTER INSERT ON Infections
+FOR EACH ROW
+BEGIN
+    DECLARE InfectedEmpType VARCHAR(255);
+    DECLARE InfectedDate DATE;
+    -- Get employee type and latest infected date from the newly inserted row
+    SET InfectedEmpType = (SELECT e.Role FROM Employees e WHERE e.EmployeeID = NEW.EmployeeID);
+    SET InfectedDate = (
+        SELECT MAX(i.Date) 
+        FROM Infections i 
+        WHERE i.EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19'
+    );
+    -- Check if the infected employee is a doctor or a nurse
+    IF InfectedEmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL THEN
+    
+        -- Email warning to inform/track all the doctors and nurses who have been in contact by having the same schedule as the infected employee
+		INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body)
+        SELECT DISTINCT FacilityID, s.EmployeeID, NEW.Date AS Date, 'Warning' AS Subject, 'One of your colleagues that you have worked with in the past two weeks have been infected with COVID-19' AS Body
+		FROM Schedule s, Employees e
+		WHERE s.EmployeeID = e.EmployeeID AND
+			  (s.FacilityID IN (SELECT FacilityID FROM Employment em WHERE (em.EmployeeID = NEW.EmployeeID))) AND
+			   s.EmployeeID <> NEW.EmployeeID AND
+			   e.Role IN ('Nurse', 'Doctor') AND
+			   s.Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID)) AND
+               s.Date <= InfectedDate AND 
+               s.Date >= DATE_SUB(InfectedDate, INTERVAL 14 DAY) AND
+			   s.StartTime = ANY (SELECT StartTime FROM Schedule WHERE (EmployeeID = NEW.EmployeeID AND Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID)))) AND 
+               s.EndTime =  ANY (SELECT EndTime FROM Schedule WHERE (EmployeeID = NEW.EmployeeID AND Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID))));
+    END IF;
+END; $$
+DELIMITER ;
 
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
@@ -129,7 +253,8 @@ INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H6J 8P5', 'Montreal', 'Quebec'),
 ('H5G 3S5', 'Montreal', 'Quebec'),
 ('H9D 5B5', 'Montreal', 'Quebec'),
-('G1B 0A9', 'Quebec', 'Quebec');
+('G1B 0A9', 'Quebec', 'Quebec'),
+('H4T 2X5', 'Montreal', 'Quebec');
 
 INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumber, Address, PostalCode) VALUES
 (1, 'Hospital Maisonneuve Rosemont', 'Hospital', 500, 'www.centralhospital.com', '514-555-1234', '123 Main Street', 'H3G 1B3'),
@@ -143,7 +268,8 @@ INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumbe
 (9, 'Harbourfront Hospital', 'Hospital', 375, 'www.harbourfronthospital.com', '514-555-9012', '235 Queens Quay West', 'H3G 2G8'),
 (10, 'West End Special instalment', 'Special instalment', 225, 'www.westend.com', '514-555-0123', '867 Queen Street West', 'H3G 1G3'),
 (11, 'General Hospital', 'Hospital', 200, 'www.generalhospital.com', '520-333-1333', '203 Saint-Peter Street', 'X3Y 6S8'),
-(12, 'Queen West CLSC', 'CLSC', 100, 'www.queenwestclsc.com', '520-333-9897', '1000 Saint-Louis Street', 'L2C 4T9');
+(12, 'Queen West CLSC', 'CLSC', 100, 'www.queenwestclsc.com', '520-333-9897', '1000 Saint-Louis Street', 'L2C 4T9'),
+(13, 'Downtown Hospital', 'Hospital', 5, 'www.downtownhospital.com', '514-383-9696', '1000 Saint-Antoine Street', 'H4T 2X5');
 
 INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES
 (1, 'John', 'Doe', 'Nurse', '1980-01-01', '123-456-789', 'johndoe@email.com', 'Canadian', '514-555-1234', '123 Main Street', 'H3G 1A7'),
@@ -180,7 +306,12 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (32, 'Sarah', 'Lance', 'Administrative personnel', '1976-09-19', '892-173-466', 'sarahlance@email.com', 'Canadian', '514-589-6435', '52 Lake Avenue', 'H6J 8P5'),
 (33, 'Celia', 'Kremer', 'Administrative personnel', '1977-08-24', '911-244-577', 'celiakremer@email.com', 'Canadian', '514-887-625', '25 Bloom Avenue', 'H5G 3S5'),
 (34, 'Dermot', 'Keller', 'Administrative personnel', '1949-11-10', '002-300-688', 'dermotkeller@email.com', 'Canadian', '514-838-6811', '77 Queens Street', 'H9D 5B5'),
-(35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9');
+(35, 'Jerome', 'Ferrer', 'Doctor', '1964-09-17', '452-390-675', 'jeromeferrer@email.com', 'Canadian', '514-344-5707', '3275 Champlain Street', 'G1B 0A9'),
+(36, 'Maelle', 'Campagnie', 'Nurse', '1994-09-19', '476-839-905', 'maellecampagnie@email.com', 'Canadian', '514-366-7777', '32 Saint-Paul Street', 'H3G 1A7'),
+(37, 'Clemence', 'Fouquet', 'Nurse', '1993-12-05', '389-756-832', 'clemencefouquet@email.com', 'Canadian', '514-855-3669', '5 Grace Street', 'H9D 5B5'),
+(38, 'Nadira', 'Rafai', 'Nurse', '1984-08-07', '568-934-835', 'nadirarafai@email.com', 'Canadian', '514-865-3778', '27 Martin Street', 'H4T 1C3'),
+(39, 'Anais', 'Perez', 'Nurse', '1992-01-27', '962-038-285', 'anaisperez@email.com', 'Canadian', '514-438-4927', '75 Marie Street', 'H4V 1B8'),
+(40, 'David', 'Klein', 'Receptionist', '1952-04-23', '341-528-491', 'davidklein@email.com', 'Canadian', '514-684-5328', '11 Rockland Street', 'H3S 1W8');
 
 INSERT INTO Managers (EmployeeID) VALUES
 (6),
@@ -266,7 +397,15 @@ INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date)
 (67, 34, 4, 'Johnson & Johnson', 1, '2022-09-01'),
 (68, 34, 4, 'Johnson & Johnson', 2, '2023-01-20'),
 (69, 35, 5, 'Pfizer', 1, '2022-08-01'),
-(70, 35, 5, 'Pfizer', 2, '2023-02-10');
+(70, 35, 5, 'Pfizer', 2, '2023-02-10'),
+(71, 36, 2, 'Moderna', 1, '2022-11-01'),
+(72, 36, 2, 'Moderna', 2, '2023-02-01'),
+(73, 37, 3, 'AstraZeneca', 1, '2022-10-01'),
+(74, 37, 3, 'AstraZeneca', 2, '2023-01-01'),
+(75, 38, 4, 'Johnson & Johnson', 1, '2022-09-01'),
+(76, 38, 4, 'Johnson & Johnson', 2, '2023-01-20'),
+(77, 39, 5, 'Pfizer', 1, '2022-08-01'),
+(78, 39, 5, 'Pfizer', 2, '2023-02-10');
 
 INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (1, 1, 'COVID-19', '2022-12-01'),
@@ -305,7 +444,19 @@ INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (34, 23, "COVID-19", "2023-01-03"),
 (35, 23, "COVID-19", "2023-02-06"),
 (36, 10, 'COVID-19', '2022-12-28'),
-(37, 10, 'COVID-19', '2023-02-01');
+(37, 10, 'COVID-19', '2023-02-01'),
+(38, 36, 'COVID-19', '2022-01-25'),
+(39, 36, 'COVID-19', '2022-04-15'),
+(40, 36, 'COVID-19', '2022-10-20'),
+(41, 37, 'COVID-19', '2022-01-20'),
+(42, 37, "COVID-19", "2022-05-03"),
+(43, 37, "COVID-19", "2022-11-01"),
+(44, 38, 'COVID-19', '2022-01-28'),
+(45, 38, 'COVID-19', '2022-03-01'),
+(46, 38, 'COVID-19', '2022-08-11'),
+(47, 39, 'COVID-19', '2022-03-26'),
+(48, 39, 'COVID-19', '2022-06-18'),
+(49, 39, 'COVID-19', '2022-09-22');
 
 INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES
 (1, 1, 1, '2022-12-01', NULL),
@@ -373,7 +524,13 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (12, 10, 63, '2023-02-06', NULL),
 (12, 11, 64, '2023-02-07', NULL),
 (10, 19, 65, '2023-02-12', NULL),
-(6, 35, 66, '2022-12-01', NULL);
+(6, 35, 66, '2022-12-01', NULL),
+(13, 20, 67, '2023-02-13', NULL),
+(13, 36, 68, '2021-01-01', NULL),
+(13, 37, 69, '2021-01-01', NULL),
+(13, 38, 70, '2021-01-01', NULL),
+(13, 39, 71, '2021-01-01', NULL),
+(1, 40, 72, '2023-01-01', NULL);
 
 INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
@@ -388,7 +545,6 @@ INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (10, 32, '2022-12-10', NULL),
 (11, 33, '2022-12-11', NULL),
 (12, 34, '2022-12-12', NULL);
-
 
 INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (1, 1, '2023-03-06', '08:00', '12:00'),
@@ -607,7 +763,67 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (6, 35, '2023-03-06', '00:00', '8:00'),
 (6, 35, '2023-03-13', '00:00', '8:00'),
 (6, 35, '2023-03-20', '00:00', '8:00'),
-(6, 35, '2023-03-27', '00:00', '8:00');
+(6, 35, '2023-03-27', '00:00', '8:00'),
+(13, 36, '2023-03-20', '08:00', '12:00'),
+(13, 36, '2023-03-21', '08:00', '12:00'),
+(13, 36, '2023-03-22', '08:00', '12:00'),
+(13, 36, '2023-03-23', '08:00', '12:00'),
+(13, 36, '2023-03-27', '08:00', '12:00'),
+(13, 36, '2023-03-28', '08:00', '12:00'),
+(13, 36, '2023-03-29', '08:00', '12:00'),
+(13, 36, '2023-03-30', '08:00', '12:00'),
+(13, 36, '2023-03-03', '08:00', '12:00'),
+(13, 36, '2023-03-04', '08:00', '12:00'),
+(13, 36, '2023-03-05', '08:00', '12:00'),
+(13, 36, '2023-03-06', '08:00', '12:00'),
+(13, 37, '2023-03-20', '08:00', '12:00'),
+(13, 37, '2023-03-21', '08:00', '12:00'),
+(13, 37, '2023-03-22', '08:00', '12:00'),
+(13, 37, '2023-03-23', '08:00', '12:00'),
+(13, 37, '2023-03-27', '08:00', '12:00'),
+(13, 37, '2023-03-28', '08:00', '12:00'),
+(13, 37, '2023-03-29', '08:00', '12:00'),
+(13, 37, '2023-03-30', '08:00', '12:00'),
+(13, 37, '2023-03-03', '08:00', '12:00'),
+(13, 37, '2023-03-04', '08:00', '12:00'),
+(13, 37, '2023-03-05', '08:00', '12:00'),
+(13, 37, '2023-03-06', '08:00', '12:00'),
+(13, 38, '2023-03-20', '08:00', '12:00'),
+(13, 38, '2023-03-21', '08:00', '12:00'),
+(13, 38, '2023-03-22', '08:00', '12:00'),
+(13, 38, '2023-03-23', '08:00', '12:00'),
+(13, 38, '2023-03-27', '08:00', '12:00'),
+(13, 38, '2023-03-28', '08:00', '12:00'),
+(13, 38, '2023-03-29', '08:00', '12:00'),
+(13, 38, '2023-03-30', '08:00', '12:00'),
+(13, 38, '2023-03-03', '08:00', '12:00'),
+(13, 38, '2023-03-04', '08:00', '12:00'),
+(13, 38, '2023-03-05', '08:00', '12:00'),
+(13, 38, '2023-03-06', '08:00', '12:00'),
+(13, 39, '2023-03-20', '08:00', '12:00'),
+(13, 39, '2023-03-21', '08:00', '12:00'),
+(13, 39, '2023-03-22', '08:00', '12:00'),
+(13, 39, '2023-03-23', '08:00', '12:00'),
+(13, 39, '2023-03-27', '08:00', '12:00'),
+(13, 39, '2023-03-28', '08:00', '12:00'),
+(13, 39, '2023-03-29', '08:00', '12:00'),
+(13, 39, '2023-03-30', '08:00', '12:00'),
+(13, 39, '2023-03-03', '08:00', '12:00'),
+(13, 39, '2023-03-04', '08:00', '12:00'),
+(13, 39, '2023-03-05', '08:00', '12:00'),
+(13, 39, '2023-03-06', '08:00', '12:00'),
+(13, 20, '2023-03-20', '08:00', '12:00'),
+(13, 20, '2023-03-21', '08:00', '12:00'),
+(13, 20, '2023-03-22', '08:00', '12:00'),
+(13, 20, '2023-03-23', '08:00', '12:00'),
+(13, 20, '2023-03-27', '08:00', '12:00'),
+(13, 20, '2023-03-28', '08:00', '12:00'),
+(13, 20, '2023-03-29', '08:00', '12:00'),
+(13, 20, '2023-03-30', '08:00', '12:00'),
+(13, 20, '2023-03-03', '08:00', '12:00'),
+(13, 20, '2023-03-04', '08:00', '12:00'),
+(13, 20, '2023-03-05', '08:00', '12:00'),
+(13, 20, '2023-03-06', '08:00', '12:00');
 
 INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES
 (2, 12, '2023-03-31', 'Warning', 'One of your colleagues
@@ -627,3 +843,37 @@ that you have worked with in the past two weeks have been infected with COVID-19
 (10, 10, '2023-03-31', 'Warning', 'One of your colleagues
 that you have worked with in the past two weeks have been infected with COVID-19');
 
+DELIMITER $$
+CREATE TRIGGER ScheduleInfectedNurseDoctor
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE EmpType VARCHAR(255);
+  DECLARE InfectedDate DATE;
+  SET EmpType = (SELECT e.Role FROM Employees e WHERE EmployeeID = NEW.EmployeeID);
+  SET InfectedDate = (SELECT MAX(i.Date) FROM Infections i WHERE EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19');
+  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND DATE_ADD(InfectedDate, INTERVAL 14 DAY) > NEW.Date THEN
+      SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CheckEmployeeVaccinationCovid 
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE VaccinationDate DATE;
+  SET VaccinationDate = (
+    SELECT MAX(Date) FROM Vaccines
+    WHERE EmployeeID = NEW.EmployeeID AND
+	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
+	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
+  );
+  IF VaccinationDate IS NULL THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Employee is not vaccinated against COVID-19 in the past six months. Employee can not be scheduled.';
+  END IF;
+END;$$
+DELIMITER ;

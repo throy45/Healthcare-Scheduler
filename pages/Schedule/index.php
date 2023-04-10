@@ -8,7 +8,7 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
     $schedules = $result->fetch_all(MYSQLI_ASSOC);
 } else {
     // Get all schedules for all employees
-    $result = $conn->query("SELECT * FROM Schedule");
+    $result = $conn->query("SELECT * FROM Schedule ORDER BY EmployeeID");
     $schedules = $result->fetch_all(MYSQLI_ASSOC);
 }
 
@@ -25,7 +25,7 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
 </head>
 <body>
     <h1>Schedule</h1>
-    <a href="./add.php">Add a Schedule</a>
+    <a href="./create.php">Add a Schedule</a>
     <?php if (count($schedules) > 0): ?>
         <table>
             <thead>
@@ -35,6 +35,7 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
                     <th>Date</th>
                     <th>Start Time</th>
                     <th>End Time</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +46,9 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
                         <td><?php echo $schedule['Date']; ?></td>
                         <td><?php echo $schedule['StartTime']; ?></td>
                         <td><?php echo $schedule['EndTime']; ?></td>
+                        <td>
+                            <a href="./delete.php?FacilityID=<?=$schedule['FacilityID'];?>&EmployeeID=<?=$schedule['EmployeeID'];?>&Date=<?=$schedule['Date'];?>&StartTime=<?=$schedule['StartTime'];?>">Delete</a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
