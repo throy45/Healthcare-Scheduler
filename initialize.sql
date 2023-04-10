@@ -166,25 +166,6 @@ END;$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER CheckEmployeeVaccinationCovid 
-BEFORE INSERT ON Schedule
-FOR EACH ROW
-BEGIN
-  DECLARE VaccinationDate DATE;
-  SET VaccinationDate = (
-    SELECT MAX(Date) FROM Vaccines
-    WHERE EmployeeID = NEW.EmployeeID AND
-	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
-	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
-  );
-  IF VaccinationDate IS NULL THEN
-    SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = 'Employee is not vaccinated against COVID-19 in the past six months. Employee can not be scheduled.';
-  END IF;
-END;$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE TRIGGER CancelAssignments
 AFTER INSERT ON Infections
 FOR EACH ROW
@@ -872,6 +853,25 @@ BEGIN
   IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND DATE_ADD(InfectedDate, INTERVAL 14 DAY) > NEW.Date THEN
       SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CheckEmployeeVaccinationCovid 
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE VaccinationDate DATE;
+  SET VaccinationDate = (
+    SELECT MAX(Date) FROM Vaccines
+    WHERE EmployeeID = NEW.EmployeeID AND
+	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
+	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
+  );
+  IF VaccinationDate IS NULL THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Employee is not vaccinated against COVID-19 in the past six months. Employee can not be scheduled.';
   END IF;
 END;$$
 DELIMITER ;
