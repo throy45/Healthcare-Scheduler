@@ -25,7 +25,7 @@
         $address = $_POST["Address"];
         $PostalCode = $_POST["PostalCode"];
 
-        $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address', '$PostalCode')");
+        $stmt = $conn->prepare("INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address', '$PostalCode')");
 
 
         if ($stmt->execute()) {

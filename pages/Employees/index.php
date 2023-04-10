@@ -1,6 +1,6 @@
 <?php require_once '../../database.php'; 
     include '../header.php';
-    $statement = $conn->prepare('SELECT * FROM employees');
+    $statement = $conn->prepare('SELECT * FROM Employees');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $row['EmployeeID'], $row['FirstName'], $row['LastName'], $row['Role'], $row['DateOfBirth'], $row['MedicareNumber'], $row['Email'], $row['Citizenship'], $row['PhoneNumber'], $row['Address'], $row['PostalCode'])
 ?>
