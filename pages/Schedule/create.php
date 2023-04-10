@@ -15,10 +15,11 @@ if (
     $StartTime = $_POST["StartTime"];
     $EndTime = $_POST["EndTime"];
 
-      try {
+    try {
         $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
         $stmt->execute();
+        header("Location: ./index.php");
     } catch (Exception $e) {
       echo "Error: " . $e->getMessage();
     }

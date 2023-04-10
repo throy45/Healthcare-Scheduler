@@ -9,7 +9,8 @@
         isset($_POST["Email"]) && 
         isset($_POST["Citizenship"]) && 
         isset($_POST["PhoneNumber"]) && 
-        isset($_POST["Address"])
+        isset($_POST["Address"]) && 
+        isset($_POST["PostalCode"])
         ) {
             
         $EmployeeID = $_POST["EmployeeID"];
@@ -22,8 +23,9 @@
         $citizenship = $_POST["Citizenship"];
         $phone_number = $_POST["PhoneNumber"];
         $address = $_POST["Address"];
+        $PostalCode = $_POST["PostalCode"];
 
-        $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address')");
+        $stmt = $conn->prepare("INSERT INTO employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES ($EmployeeID, '$FirstName', '$LastName', '$Role', '$date_of_birth', '$medicare_number', '$email', ' $citizenship', '$phone_number', '$address', '$PostalCode')");
 
 
         if ($stmt->execute()) {
@@ -78,7 +80,9 @@
         <label for="PhoneNumber">Phone Number</label><br>
         <input type="text" name="PhoneNumber" id="PhoneNumber"><br>
         <label for="Address">Address</label><br>
-        <input type="text" name="Address" id="Address"><br><br>
+        <input type="text" name="Address" id="Address"><br>
+        <label for="PostalCode">Postal Code</label><br>
+        <input type="text" name="PostalCode" id="PostalCode"><br><br>
         <button type="submit">Add</button><br><br>
     </form>
     <a href="./">Back to Employee list</a>

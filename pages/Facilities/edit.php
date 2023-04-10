@@ -23,7 +23,7 @@
     $Address = $_POST["Address"];
     $PostalCode = $_POST["PostalCode"];
 
-    $stmt = $conn->prepare("UPDATE Facilities SET Name=$Name, Type=$Type, Capacity=$Capacity, WebAddress=$WebAddress, PhoneNumber=$PhoneNumber, Address=$Address, PostalCode=$PostalCode WHERE FacilityID=$FacilityID");
+    $stmt = $conn->prepare("UPDATE Facilities SET Name='$Name', Type='$Type', Capacity=$Capacity, WebAddress='$WebAddress', PhoneNumber='$PhoneNumber', Address='$Address', PostalCode='$PostalCode' WHERE FacilityID=$FacilityID");
 
     if ($stmt->execute()) {
       header("Location: ./index.php");
@@ -67,7 +67,7 @@
     <input type="text" name="Address" id="Address" value="<?php echo $row["Address"]  ?>" required><br>
     <label for="PostalCode">Postal Code</label><br>
     <input type="text" name="PostalCode" id="PostalCode" readonly="readonly" value="<?php echo $row["PostalCode"] ?>" required><br><br>
-    <button type="submit">Add</button><br><br>
+    <button type="submit">Update</button><br><br>
   </form>
   <a href="./index.php">Back to Facility list</a>
 </body>

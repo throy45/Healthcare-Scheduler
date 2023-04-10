@@ -47,6 +47,7 @@ if (isset($_GET['employeeID']) && !empty($_GET['employeeID'])) {
                         <td><?php echo $schedule['StartTime']; ?></td>
                         <td><?php echo $schedule['EndTime']; ?></td>
                         <td>
+                            <a href="./edit.php?FacilityID=<?=$schedule['FacilityID'];?>&EmployeeID=<?=$schedule['EmployeeID'];?>&Date=<?=$schedule['Date'];?>&StartTime=<?=$schedule['StartTime'];?>">Edit</a>
                             <a href="./delete.php?FacilityID=<?=$schedule['FacilityID'];?>&EmployeeID=<?=$schedule['EmployeeID'];?>&Date=<?=$schedule['Date'];?>&StartTime=<?=$schedule['StartTime'];?>">Delete</a>
                         </td>
                     </tr>
