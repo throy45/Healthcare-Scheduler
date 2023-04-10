@@ -153,7 +153,112 @@ BEGIN
 END;$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER FourWeekSchedule
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  IF NEW.Date > (NOW() + INTERVAL 4 WEEK) THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Cannot schedule more than four weeks ahead of time.';
+  END IF;
+END;$$
+DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER ScheduleInfectedNurseDoctor
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE EmpType VARCHAR(255);
+  DECLARE InfectedDate DATE;
+  SET EmpType = (SELECT e.Role FROM Employees e WHERE EmployeeID = NEW.EmployeeID);
+  SET InfectedDate = (SELECT MAX(i.Date) FROM Infections i WHERE EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19');
+  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND DATE_ADD(InfectedDate, INTERVAL 14 DAY) > NEW.Date THEN
+      SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CheckEmployeeVaccinationCovid 
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  DECLARE VaccinationDate DATE;
+  SET VaccinationDate = (
+    SELECT MAX(Date) FROM Vaccines
+    WHERE EmployeeID = NEW.EmployeeID AND
+	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
+	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
+  );
+  IF VaccinationDate IS NULL THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Employee is not vaccinated against COVID-19 in the past six months. Employee can not be scheduled.';
+  END IF;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER CancelAssignments
+AFTER INSERT ON Infections
+FOR EACH ROW
+BEGIN
+    DECLARE EmpType VARCHAR(255);
+    DECLARE InfectedDate DATE;
+    -- Get employee type and latest infected date from the newly inserted row
+    SET EmpType = (SELECT e.Role FROM Employees e WHERE e.EmployeeID = NEW.EmployeeID);
+    SET InfectedDate = (
+        SELECT MAX(i.Date) 
+        FROM Infections i 
+        WHERE i.EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19'
+    );
+    -- Check if the infected employee is a doctor or a nurse
+    IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL THEN
+        -- Cancel all assignments for the infected employee for two weeks
+        DELETE 
+        FROM Schedule s 
+        WHERE EmployeeID = NEW.EmployeeID AND 
+              s.Date >= InfectedDate AND 
+              s.Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY);
+    END IF;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER EmailWarningInfectedEmployee
+AFTER INSERT ON Infections
+FOR EACH ROW
+BEGIN
+    DECLARE InfectedEmpType VARCHAR(255);
+    DECLARE InfectedDate DATE;
+    -- Get employee type and latest infected date from the newly inserted row
+    SET InfectedEmpType = (SELECT e.Role FROM Employees e WHERE e.EmployeeID = NEW.EmployeeID);
+    SET InfectedDate = (
+        SELECT MAX(i.Date) 
+        FROM Infections i 
+        WHERE i.EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19'
+    );
+    -- Check if the infected employee is a doctor or a nurse
+    IF InfectedEmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL THEN
+    
+        -- Email warning to inform/track all the doctors and nurses who have been in contact by having the same schedule as the infected employee
+		INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body)
+        SELECT DISTINCT FacilityID, s.EmployeeID, NEW.Date AS Date, 'Warning' AS Subject, 'One of your colleagues that you have worked with in the past two weeks have been infected with COVID-19' AS Body
+		FROM Schedule s, Employees e
+		WHERE s.EmployeeID = e.EmployeeID AND
+			  (s.FacilityID IN (SELECT FacilityID FROM Employment em WHERE (em.EmployeeID = NEW.EmployeeID))) AND
+			   s.EmployeeID <> NEW.EmployeeID AND
+			   e.Role IN ('Nurse', 'Doctor') AND
+			   s.Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID)) AND
+               s.Date <= InfectedDate AND 
+               s.Date >= DATE_SUB(InfectedDate, INTERVAL 14 DAY) AND
+			   s.StartTime = ANY (SELECT StartTime FROM Schedule WHERE (EmployeeID = NEW.EmployeeID AND Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID)))) AND 
+               s.EndTime =  ANY (SELECT EndTime FROM Schedule WHERE (EmployeeID = NEW.EmployeeID AND Date IN (SELECT Date FROM Schedule WHERE (EmployeeID = NEW.EmployeeID))));
+    END IF;
+END; $$
+DELIMITER ;
 
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
