@@ -220,8 +220,8 @@ BEGIN
         DELETE 
         FROM Schedule s 
         WHERE EmployeeID = NEW.EmployeeID AND 
-              s.Date >= InfectedDate AND 
-              s.Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY);
+              Date >= InfectedDate AND 
+              Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY);
     END IF;
 END; $$
 DELIMITER ;
