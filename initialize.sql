@@ -110,7 +110,7 @@ DELIMITER $$
 CREATE EVENT SendWeeklySchedule
 ON SCHEDULE EVERY 1 WEEK
 -- STARTS CURRENT_DATE + INTERVAL 6 - WEEKDAY(CURRENT_DATE) DAY
-STARTS '2023-04-10 15:17:00'
+STARTS '2023-04-09 22:53:00'
 DO
 BEGIN
     DECLARE ScheduleDate DATE;
@@ -921,23 +921,18 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (13, 20, '2023-03-04', '08:00', '12:00'),
 (13, 20, '2023-03-05', '08:00', '12:00'),
 (13, 20, '2023-03-06', '08:00', '12:00'),
-(13, 36, '2023-04-11', '08:00', '12:00'),
 (13, 36, '2023-04-12', '08:00', '12:00'),
 (13, 36, '2023-04-13', '08:00', '12:00'),
 (13, 36, '2023-04-14', '08:00', '12:00'),
-(13, 37, '2023-04-11', '08:00', '12:00'),
 (13, 37, '2023-04-12', '08:00', '12:00'),
 (13, 37, '2023-04-13', '08:00', '12:00'),
 (13, 37, '2023-04-14', '08:00', '12:00'),
-(13, 38, '2023-04-11', '08:00', '12:00'),
 (13, 38, '2023-04-12', '08:00', '12:00'),
 (13, 38, '2023-04-13', '08:00', '12:00'),
 (13, 38, '2023-04-14', '08:00', '12:00'),
-(13, 39, '2023-04-11', '08:00', '12:00'),
 (13, 39, '2023-04-12', '08:00', '12:00'),
 (13, 39, '2023-04-13', '08:00', '12:00'),
 (13, 39, '2023-04-14', '08:00', '12:00'),
-(13, 20, '2023-04-11', '08:00', '12:00'),
 (13, 20, '2023-04-12', '08:00', '12:00'),
 (13, 20, '2023-04-13', '08:00', '12:00'),
 (13, 20, '2023-04-14', '08:00', '12:00');
@@ -958,7 +953,32 @@ that you have worked with in the past two weeks have been infected with COVID-19
 (12, 34, '2023-03-31', 'Warning', 'One of your colleagues
 that you have worked with in the past two weeks have been infected with COVID-19'),
 (10, 10, '2023-03-31', 'Warning', 'One of your colleagues
-that you have worked with in the past two weeks have been infected with COVID-19');
+that you have worked with in the past two weeks have been infected with COVID-19'),
+(13, 36, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Maelle Campagnie, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 37, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Clemence Fouquet, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 38, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Nadira Rafai, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 39, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Anais Perez, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team'),
+(13, 20, '2023-04-09', 'Downtown Hospital Schedule from Monday 2023-04-10 to Sunday 2023-04-16', 
+'Dear Emily Thomas, Here is your schedule: Monday: No Assignment. Tuesday: No Assignment.
+Wednsday: From 08:00:00 To 12:00:00. Thursday: From 08:00:00 To 12:00:00. Friday: From 08:00:00 To 12:00:00.
+Saturday: No Assignment. Sunday: No Assignment. Please let us know if you have any questions or concerns.
+Best regards, The HR team');
 
 DELIMITER $$
 CREATE TRIGGER ScheduleInfectedNurseDoctor
