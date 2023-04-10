@@ -366,7 +366,7 @@ INSERT INTO Facilities (FacilityID, Name, Type, Capacity, WebAddress, PhoneNumbe
 (10, 'West End Special instalment', 'Special instalment', 225, 'www.westend.com', '514-555-0123', '867 Queen Street West', 'H3G 1G3'),
 (11, 'General Hospital', 'Hospital', 200, 'www.generalhospital.com', '520-333-1333', '203 Saint-Peter Street', 'X3Y 6S8'),
 (12, 'Queen West CLSC', 'CLSC', 100, 'www.queenwestclsc.com', '520-333-9897', '1000 Saint-Louis Street', 'L2C 4T9'),
-(13, 'Downtown Hospital', 'Hospital', 5, 'www.downtownhospital.com', '514-383-9696', '1000 Saint-Antoine Street', 'H4T 2X5');
+(13, 'Downtown Hospital', 'Hospital', 6, 'www.downtownhospital.com', '514-383-9696', '1000 Saint-Antoine Street', 'H4T 2X5');
 
 INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, Email, Citizenship, PhoneNumber, Address, PostalCode) VALUES
 (1, 'John', 'Doe', 'Nurse', '1980-01-01', '123-456-789', 'johndoe@email.com', 'Canadian', '514-555-1234', '123 Main Street', 'H3G 1A7'),
@@ -408,7 +408,8 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (37, 'Clemence', 'Fouquet', 'Nurse', '1993-12-05', '389-756-832', 'clemencefouquet@email.com', 'Canadian', '514-855-3669', '5 Grace Street', 'H9D 5B5'),
 (38, 'Nadira', 'Rafai', 'Nurse', '1984-08-07', '568-934-835', 'nadirarafai@email.com', 'Canadian', '514-865-3778', '27 Martin Street', 'H4T 1C3'),
 (39, 'Anais', 'Perez', 'Nurse', '1992-01-27', '962-038-285', 'anaisperez@email.com', 'Canadian', '514-438-4927', '75 Marie Street', 'H4V 1B8'),
-(40, 'David', 'Klein', 'Receptionist', '1952-04-23', '341-528-491', 'davidklein@email.com', 'Canadian', '514-684-5328', '11 Rockland Street', 'H3S 1W8');
+(40, 'David', 'Klein', 'Receptionist', '1952-04-23', '341-528-491', 'davidklein@email.com', 'Canadian', '514-684-5328', '11 Rockland Street', 'H3S 1W8'),
+(41, 'Thomas', 'Roy', 'Administrative personnel', '1978-05-24', '234-619-502', 'thomas@roy.com', 'Canadian', '514-684-5329', '12 Rockland Street', 'H3S 1W8');
 
 INSERT INTO Managers (EmployeeID) VALUES
 (6),
@@ -422,7 +423,8 @@ INSERT INTO Managers (EmployeeID) VALUES
 (31),
 (32),
 (33),
-(34);
+(34),
+(41);
 
 INSERT INTO Vaccines (VaccineID, EmployeeID, FacilityID, Type, DoseNumber, Date) VALUES
 (1, 1, 1, 'Pfizer', 1, '2022-12-01'),
@@ -627,7 +629,8 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (13, 37, 69, '2021-01-01', NULL),
 (13, 38, 70, '2021-01-01', NULL),
 (13, 39, 71, '2021-01-01', NULL),
-(1, 40, 72, '2023-01-01', NULL);
+(1, 40, 72, '2023-01-01', NULL),
+(13, 41, 73, '2008-01-01', NULL);
 
 INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
@@ -641,7 +644,8 @@ INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (9, 31, '2022-12-09', NULL),
 (10, 32, '2022-12-10', NULL),
 (11, 33, '2022-12-11', NULL),
-(12, 34, '2022-12-12', NULL);
+(12, 34, '2022-12-12', NULL),
+(13, 41, '2008-01-01', NULL);
 
 INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (1, 1, '2023-03-06', '08:00', '12:00'),
