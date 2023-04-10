@@ -174,7 +174,7 @@ BEGIN
   DECLARE InfectedDate DATE;
   SET EmpType = (SELECT e.Role FROM Employees e WHERE EmployeeID = NEW.EmployeeID);
   SET InfectedDate = (SELECT MAX(i.Date) FROM Infections i WHERE EmployeeID = NEW.EmployeeID AND i.Type = 'COVID-19');
-  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND DATE_ADD(InfectedDate, INTERVAL 14 DAY) > NEW.Date THEN
+  IF EmpType IN ('Nurse', 'Doctor') AND InfectedDate IS NOT NULL AND NEW.Date < DATE_ADD(InfectedDate, INTERVAL 14 DAY) THEN
       SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Cannot schedule an infected nurse or doctor within two weeks of infection.';
   END IF;
