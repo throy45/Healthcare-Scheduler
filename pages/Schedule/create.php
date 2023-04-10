@@ -18,6 +18,7 @@ if (
     try {
         $stmt = $conn->prepare("INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("iisss", $FacilityID, $EmployeeID, $Date, $StartTime, $EndTime);
+
         $stmt->execute();
         header("Location: ./index.php");
     } catch (Exception $e) {
