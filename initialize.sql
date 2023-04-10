@@ -107,6 +107,103 @@ CREATE TABLE Schedule (
 );
 
 DELIMITER $$
+CREATE EVENT SendWeeklySchedule
+ON SCHEDULE EVERY 1 WEEK
+-- STARTS CURRENT_DATE + INTERVAL 6 - WEEKDAY(CURRENT_DATE) DAY
+STARTS '2023-04-09 22:53:00'
+DO
+BEGIN
+    DECLARE ScheduleDate DATE;
+    DECLARE StartTime TIME;
+    DECLARE EndTime TIME;
+    DECLARE EmployeeID_local INT;
+    DECLARE EmployeeFirstName VARCHAR(50);
+    DECLARE EmployeeLastName VARCHAR(50);
+    DECLARE EmployeeEmail VARCHAR(50);
+    DECLARE FacilityID_local INT;
+    DECLARE FacilityName VARCHAR(50);
+    DECLARE FacilityAddress VARCHAR(100);
+    DECLARE EmailSubject VARCHAR(100);
+    DECLARE EmailBody VARCHAR(1000);
+    DECLARE EmailDate DATE DEFAULT CURDATE();
+    DECLARE currentDate DATE;
+	DECLARE count INT DEFAULT 0;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur CURSOR FOR 
+    SELECT DISTINCT EmployeeID, FacilityID
+		FROM Schedule s
+		WHERE s.Date BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+		ORDER BY EmployeeID, FacilityID;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    
+	CREATE VIEW ScheduleView AS
+    SELECT s.Date, s.StartTime, s.EndTime, s.EmployeeID, e.FName, e.LName, e.Email, f.FacilityID, f.Name, f.Address
+        FROM Schedule s
+        JOIN Employees e ON s.EmployeeID = e.EmployeeID
+        JOIN Facilities f ON s.FacilityID = f.FacilityID
+        WHERE s.Date BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+        ORDER BY EmployeeID, FacilityID, Date;
+
+   -- Loop through schedule records
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO EmployeeID_local, FacilityID_local;
+        
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        SET FacilityName = (SELECT DISTINCT sv.Name FROM ScheduleView sv WHERE sv.FacilityID = FacilityID_local);
+        SET EmailSubject = CONCAT(FacilityName, ' Schedule from Monday ', DATE_ADD(CURDATE(), INTERVAL 1 DAY), ' to Sunday ', DATE_ADD(CURDATE(), INTERVAL 7 DAY));
+        
+        SET EmployeeFirstName = (SELECT DISTINCT sv.FName FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local);
+        SET EmployeeLastName = (SELECT DISTINCT sv.LName FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local);
+        SET FacilityAddress = (SELECT DISTINCT sv.Address FROM ScheduleView sv WHERE sv.FacilityID = FacilityID_local);
+        SET EmailBody = CONCAT('Dear ', EmployeeFirstName, ' ', EmployeeLastName, ',\n\n', 
+                               'Here is your schedule: \n\n', 
+                               'Facility: ', FacilityName, '\n', 
+                               'Address: ', FacilityAddress, '\n');
+
+		SET currentDate = DATE_ADD(CURDATE(), INTERVAL 1 DAY);		
+		WHILE currentDate != DATE_ADD(CURDATE(), INTERVAL 8 DAY) DO
+			
+			CREATE TEMPORARY TABLE daySchedule AS
+            SELECT sv.StartTime, sv.EndTime 
+				FROM ScheduleView sv 
+                WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate;
+
+            SET count = (SELECT COUNT(*) FROM daySchedule);
+            
+            IF count = 0 THEN
+				SET EmailBody = CONCAT(EmailBody, DAYNAME(currentDate), ' No Assignment.\n');
+			ELSE
+				SET StartTime = (SELECT sv.StartTime FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate);
+				SET EndTime = (SELECT sv.EndTime FROM ScheduleView sv WHERE sv.EmployeeID = EmployeeID_local AND sv.FacilityID = FacilityID_local AND sv.Date = currentDate);
+				SET EmailBody = CONCAT(EmailBody, DAYNAME(currentDate), ' From ', StartTime, ' To ', EndTime, '.\n');
+            END IF;
+            
+            DROP TABLE daySchedule;
+            SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+        END WHILE;
+        
+        SET EmailBody = CONCAT(EmailBody, 
+                               'Please let us know if you have any questions or concerns.\n\n', 
+                               'Best regards,\n', 
+                               'The HR team');
+        -- CALL SendEmail(EmployeeEmail, EmailSubject, EmailBody);
+        -- Insert email into the email log
+        INSERT INTO EmailLog 
+        VALUES (FacilityID_local, EmployeeID_local, EmailDate, EmailSubject, LEFT(EmailBody, 80));
+    END LOOP;
+    CLOSE cur; 
+    
+	DROP VIEW ScheduleView;
+END;$$
+DELIMITER ;
+
+
+DELIMITER $$
 CREATE TRIGGER AddingEmployeeExceedCapacityFacility
 BEFORE INSERT ON Employment
 FOR EACH ROW
