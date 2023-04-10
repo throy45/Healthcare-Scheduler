@@ -310,7 +310,8 @@ INSERT INTO Employees (EmployeeID, FName, LName, Role, DoBirth, MedicareNumber, 
 (36, 'Maelle', 'Campagnie', 'Nurse', '1994-09-19', '476-839-905', 'maellecampagnie@email.com', 'Canadian', '514-366-7777', '32 Saint-Paul Street', 'H3G 1A7'),
 (37, 'Clemence', 'Fouquet', 'Nurse', '1993-12-05', '389-756-832', 'clemencefouquet@email.com', 'Canadian', '514-855-3669', '5 Grace Street', 'H9D 5B5'),
 (38, 'Nadira', 'Rafai', 'Nurse', '1984-08-07', '568-934-835', 'nadirarafai@email.com', 'Canadian', '514-865-3778', '27 Martin Street', 'H4T 1C3'),
-(39, 'Anais', 'Perez', 'Nurse', '1992-01-27', '962-038-285', 'anaisperez@email.com', 'Canadian', '514-438-4927', '75 Marie Street', 'H4V 1B8');
+(39, 'Anais', 'Perez', 'Nurse', '1992-01-27', '962-038-285', 'anaisperez@email.com', 'Canadian', '514-438-4927', '75 Marie Street', 'H4V 1B8'),
+(40, 'David', 'Klein', 'Receptionist', '1952-04-23', '341-528-491', 'davidklein@email.com', 'Canadian', '514-684-5328', '11 Rockland Street', 'H3S 1W8');
 
 INSERT INTO Managers (EmployeeID) VALUES
 (6),
@@ -528,7 +529,8 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (13, 36, 68, '2021-01-01', NULL),
 (13, 37, 69, '2021-01-01', NULL),
 (13, 38, 70, '2021-01-01', NULL),
-(13, 39, 71, '2021-01-01', NULL);
+(13, 39, 71, '2021-01-01', NULL),
+(1, 40, 72, '2023-01-01', NULL);
 
 INSERT INTO Managing (FacilityID, EmployeeID, StartDate, EndDate) VALUES
 (1, 14, '2022-12-01', NULL),
