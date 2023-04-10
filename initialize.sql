@@ -15,7 +15,7 @@ CREATE TABLE Facilities (
   Address VARCHAR(255),
   PostalCode VARCHAR(255),
   FOREIGN KEY (PostalCode) REFERENCES PostalCodes(PostalCode),
-  CHECK (Type in ('Hospital', 'CLSC', 'Clinic', 'Pharmacy', 'Special installment'))
+  CHECK (Type in ('Hospital', 'CLSC', 'Clinic', 'Pharmacy', 'Special instalment'))
 );
 
 CREATE TABLE Employees (
