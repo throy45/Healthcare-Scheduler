@@ -139,6 +139,21 @@ SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is scheduled at a conflicti
 END;$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER CheckTimeIntervalSchedule BEFORE INSERT ON Schedule
+FOR EACH ROW
+BEGIN
+  IF EXISTS (SELECT * FROM Schedule
+             WHERE EmployeeId = NEW.EmployeeId
+             AND Date = NEW.Date
+             AND ((StartTime <= NEW.StartTime AND EndTime > NEW.StartTime - INTERVAL 1 HOUR)
+                  OR (StartTime >= New.StartTime AND StartTime < NEW.EndTime + INTERVAL 1 HOUR))) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is scheduled with less than 1 hour interval';
+  END IF;
+END;$$
+DELIMITER ;
+
+
 
 INSERT INTO PostalCodes (PostalCode, City, Province) VALUES
 ('H3G 1B3', 'Montreal', 'Quebec'),
