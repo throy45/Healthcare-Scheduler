@@ -110,7 +110,7 @@ DELIMITER $$
 CREATE EVENT SendWeeklySchedule
 ON SCHEDULE EVERY 1 WEEK
 -- STARTS CURRENT_DATE + INTERVAL 6 - WEEKDAY(CURRENT_DATE) DAY
-STARTS '2023-04-10 17:25:00'
+STARTS '2023-04-09 00:01:00'
 DO
 BEGIN
     DECLARE ScheduleDate DATE;
@@ -1010,7 +1010,7 @@ BEGIN
   SET VaccinationDate = (
     SELECT MAX(Date) FROM Vaccines
     WHERE EmployeeID = NEW.EmployeeID AND
-	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
+	    (Type='Pfizer' OR Type='Moderna' OR Type='AstraZeneca' OR Type='Johnson & Johnson') AND
 	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
   );
   IF VaccinationDate IS NULL THEN
@@ -1031,7 +1031,7 @@ BEGIN
                     WHERE EmployeeID = NEW.EmployeeID AND
                     FacilityID = NEW.FacilityID AND
                     StartDate < NEW.Date AND
-                    EndDate IS NOT NULL) 
+                    EndDate IS NULL) 
 	THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not work at this facility';
   	END IF; 
