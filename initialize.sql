@@ -555,7 +555,8 @@ INSERT INTO Infections(InfectionID, EmployeeID, Type, Date) VALUES
 (46, 38, 'COVID-19', '2022-08-11'),
 (47, 39, 'COVID-19', '2022-03-26'),
 (48, 39, 'COVID-19', '2022-06-18'),
-(49, 39, 'COVID-19', '2022-09-22');
+(49, 39, 'COVID-19', '2022-09-22'),
+(50, 10, 'COVID-19', '2001-02-01');
 
 INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) VALUES
 (1, 1, 1, '2022-12-01', NULL),
@@ -939,6 +940,7 @@ INSERT INTO Schedule (FacilityID, EmployeeID, Date, StartTime, EndTime) VALUES
 (13, 39, '2023-04-14', '08:00', '12:00'),
 (13, 20, '2023-04-12', '08:00', '12:00'),
 (13, 20, '2023-04-13', '08:00', '12:00'),
+(13, 20, '2023-04-14', '08:00', '12:00'),
 (7, 17, '2023-04-14', '08:00', '12:00');
 
 INSERT INTO EmailLog (FacilityID, EmployeeID, Date, Subject, Body) VALUES

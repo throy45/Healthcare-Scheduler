@@ -2,47 +2,31 @@
 require_once '../../database.php';
 include '../header.php';
 
-$statement = $conn->prepare('SELECT FName, LName, FirstDayOfWork, Role, DoBirth, Email, TotalHours
+$statement = $conn->prepare("SELECT FName, LName, FirstDayOfWork, Role, DoBirth, Email, TotalHours
 FROM (
-    SELECT e.EmployeeID, e.FName, e.LName, MIN(em2.StartDate) AS FirstDayOfWork,
-    e.Role, e.DoBirth, e.Email
-    FROM Employees e, Employment em1, Employment em2, Infections i
-    WHERE e.EmployeeID = i.EmployeeID AND
-    e.EmployeeID = em1.EmployeeID AND
-    e.EmployeeID = em2.EmployeeID AND
-    e.Role IN ("Nurse", "Doctor") AND
-    em1.EndDate IS NULL AND
-    e.EmployeeID IN (
-        SELECT EmployeeID
-        FROM Infections
-        WHERE Type = "COVID-19"
-        GROUP BY EmployeeID
-        HAVING COUNT(InfectionID) >= 3
-    )
-    GROUP BY e.EmployeeID
-    ORDER BY e.Role, e.FName, e.LName
+	 SELECT e.EmployeeID, e.FName, e.LName, MIN(em2.StartDate) AS FirstDayOfWork, e.Role, e.DoBirth, e.Email
+        	FROM Employees e, Employment em1, Employment em2, Infections i
+        	WHERE e.EmployeeID = i.EmployeeID AND
+  	  	   e.EmployeeID = em1.EmployeeID AND
+  	  	   e.EmployeeID = em2.EmployeeID AND
+  	  	   e.Role IN ('Nurse', 'Doctor') AND
+ 	   	   em1.EndDate IS NULL AND
+  	  	   e.EmployeeID IN (
+                    		SELECT EmployeeID
+                    		FROM Infections
+                    		WHERE Type = 'COVID-19'
+                    		GROUP BY EmployeeID
+                    		HAVING COUNT(InfectionID) >=3)
+        	GROUP BY e.EmployeeID
+        	ORDER BY e.Role, e.FName, e.LName
 ) AS T1,
 (
-    SELECT EmployeeID, SUM(TIMESTAMPDIFF(HOUR, StartTime, EndTime)) AS TotalHours
-    FROM Schedule
-    GROUP BY EmployeeID
+	SELECT EmployeeID, SUM(TIMESTAMPDIFF(HOUR, StartTime, EndTime)) AS TotalHours
+	FROM Schedule
+	GROUP BY EmployeeID
 ) AS T2
-WHERE T1.EmployeeID = T2.EmployeeID AND
-T2.TotalHours = (
-    SELECT MAX(TotalHours)
-    FROM (
-        SELECT EmployeeID, SUM(TIMESTAMPDIFF(HOUR, StartTime, EndTime)) AS TotalHours
-        FROM Schedule
-        WHERE EmployeeID IN (
-            SELECT e.EmployeeID
-            FROM Employees e, Employment em1
-            WHERE e.EmployeeID = em1.EmployeeID AND
-            e.Role = "Nurse" AND
-            em1.EndDate IS NULL
-        )
-        GROUP BY EmployeeID
-    ) AS T3
-)');
+WHERE T1.EmployeeID = T2.EmployeeID;
+");
 
 $statement->execute();
 $statement->bind_result($fname, $lname, $firstdayofwork, $role, $dob, $email, $totalhours);
