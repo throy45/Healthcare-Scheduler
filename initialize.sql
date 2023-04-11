@@ -578,7 +578,6 @@ INSERT INTO Employment (FacilityID, EmployeeID, ContractID, StartDate, EndDate) 
 (7, 17, 17, '2022-12-17', NULL),
 (8, 18, 18, '2022-12-18', NULL),
 (9, 19, 19, '2022-12-19', '2023-02-11'),
-(10, 20, 20, '2022-12-20', '2023-02-12'),
 (11, 1, 21, "2021-01-01", "2022-11-01"),
 (12, 4, 22, "2020-12-15", "2022-11-15"),
 (1, 21, 23, "2020-01-01", null),
@@ -1028,11 +1027,11 @@ BEFORE INSERT ON Schedule
 FOR EACH ROW 
 BEGIN 
   	IF NOT EXISTS (SELECT * 
-    			   FROM Employment
-		               WHERE EmployeeID = NEW.EmployeeID AND
-				      FacilityID = NEW.FacilityID AND
-                           		StartDate > NEW.Date AND
-                         		EndDate < NEW.Date) 
+                    FROM Employment
+                    WHERE EmployeeID = NEW.EmployeeID AND
+                    FacilityID = NEW.FacilityID AND
+                    StartDate < NEW.Date AND
+                    EndDate IS NOT NULL) 
 	THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not work at this facility';
   	END IF; 

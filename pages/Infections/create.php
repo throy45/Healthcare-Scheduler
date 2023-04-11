@@ -10,7 +10,6 @@
     $Type = $_POST["Type"];
     $Date = $_POST["Date"];
     
-    echo "INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ($EmployeeID, $InfectionID, '$Type', '$Date')";
     $stmt = $conn->prepare("INSERT INTO Infections (EmployeeID, InfectionID, Type, Date) VALUES ($EmployeeID, $InfectionID, '$Type', '$Date')");
 
     if ($stmt->execute()) {
