@@ -2,17 +2,16 @@
 require_once '../../database.php'; 
 include '../header.php';
 
-$statement = $conn->prepare("
-    SELECT e.FName, e.LName, MIN(em2.StartDate) AS FirstDayOfWork, e.Role, e.DoBirth,  
-    e.Email, SUM(TIMESTAMPDIFF(HOUR, StartTime, EndTime)) AS TotalHours
-    FROM Employees e
-    INNER JOIN Employment em1 ON e.EmployeeID = em1.EmployeeID AND em1.EndDate IS NULL
-    INNER JOIN Employment em2 ON e.EmployeeID = em2.EmployeeID
-    LEFT JOIN Infections i ON e.EmployeeID = i.EmployeeID AND i.Type = 'COVID-19'
-    LEFT JOIN Schedule s ON e.EmployeeID = s.EmployeeID
-    WHERE e.Role IN ('Nurse', 'Doctor') AND i.EmployeeID IS NULL
-    GROUP BY e.EmployeeID
-    ORDER BY e.Role, e.FName, e.LName;
+$statement = $conn->prepare("SELECT e.FName, e.LName, MIN(em.StartDate) AS FirstDayOfWork, e.Role, e.DoBirth, e.Email, SUM(TIMESTAMPDIFF(HOUR, s.StartTime, s.EndTime)) AS TotalHours
+                            FROM Schedule s, Employees e, Employment em
+                            WHERE e.EmployeeID = s.EmployeeID AND 
+                            e.EmployeeID = em.EmployeeID AND
+                            em.EndDate IS NULL AND
+                            e.Role IN ('Nurse', 'Doctor') AND
+                            NOT EXISTS (SELECT * FROM Infections i WHERE i.EmployeeID = e.EmployeeID)
+                            GROUP BY s.EmployeeID
+                            ORDER BY e.Role, e.FName, e.LName;
+
 ");
 $statement->execute();
 $statement->bind_result($fname, $lname, $firstdayofwork, $role, $dob, $email, $totalhours);

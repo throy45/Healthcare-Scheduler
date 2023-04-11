@@ -17,22 +17,7 @@
             FROM Schedule
             GROUP BY EmployeeID
         ) AS T2
-        WHERE T1.EmployeeID = T2.EmployeeID AND
-        T2.TotalHours = (
-            SELECT MAX(TotalHours)
-            FROM (
-                SELECT SUM(TIMESTAMPDIFF(HOUR, StartTime, EndTime)) AS TotalHours
-                FROM Schedule
-                WHERE EmployeeID IN (
-                    SELECT e.EmployeeID
-                    FROM Employees e, Employment em1
-                    WHERE e.EmployeeID = em1.EmployeeID AND
-                    e.Role = "Nurse" AND
-                    em1.EndDate IS NULL
-                )
-                GROUP BY EmployeeID
-            ) AS T3
-        )');
+        ');
     $statement->execute();
     mysqli_stmt_bind_result($statement, $fname, $lname, $firstdayofwork, $role, $dob, $email, $totalhours);
 ?>
