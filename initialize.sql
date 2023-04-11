@@ -1031,7 +1031,7 @@ BEGIN
                     WHERE EmployeeID = NEW.EmployeeID AND
                     FacilityID = NEW.FacilityID AND
                     StartDate < NEW.Date AND
-                    EndDate IS NOT NULL) 
+                    EndDate IS NULL) 
 	THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not work at this facility';
   	END IF; 
