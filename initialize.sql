@@ -1010,7 +1010,7 @@ BEGIN
   SET VaccinationDate = (
     SELECT MAX(Date) FROM Vaccines
     WHERE EmployeeID = NEW.EmployeeID AND
-	    (Type = 'Pfizer' OR Type = 'Moderna' OR 'AstraZeneca' OR 'Johnson & Johnson') AND
+	    (Type='Pfizer' OR Type='Moderna' OR Type='AstraZeneca' OR Type='Johnson & Johnson') AND
 	    Date BETWEEN DATE_SUB(NEW.Date, INTERVAL 6 MONTH) AND NEW.Date
   );
   IF VaccinationDate IS NULL THEN
